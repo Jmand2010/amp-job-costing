@@ -2661,17 +2661,11 @@ document.addEventListener("click",e=>{ if(!e.target.closest(".print-menu-wrap"))
 // BOOT — uses FIREBASE_CONFIG defined at top of this script
 // ═══════════════════════════════════════════════════════════════════════════
 (function boot(){
-  const saved=localStorage.getItem("amp_theme")||"light";
-  document.documentElement.setAttribute("data-theme",saved);
-  ge("themeBtn").textContent=saved==="dark"?"☀️":"🌙";
-  // Use the hardcoded config at the top of this file
-  if (FIREBASE_CONFIG.apiKey && !FIREBASE_CONFIG.apiKey.startsWith("REPLACE")) {
-    ge("configModal").style.display="none";
-    initFirebase(FIREBASE_CONFIG);
-  } else {
-    ge("configModal").style.display="flex";
-    ge("userBadge").textContent="⚠ Config needed";
-  }
+  const saved = localStorage.getItem("amp_theme") || "light";
+  document.documentElement.setAttribute("data-theme", saved);
+  ge("themeBtn").textContent = saved === "dark" ? "☀️" : "🌙";
+
+  initFirebase(FIREBASE_CONFIG);
 })();
 
 // ═══════════════════════════════════════════════════════════════════════════
