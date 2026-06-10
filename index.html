@@ -581,29 +581,6 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-hei
   </div>
 </header>
 
-<!-- ── FIREBASE MODAL ─────────────────────────────────────────────────── -->
-<div class="modal-overlay" id="configModal">
-  <div class="modal-box">
-    <div class="modal-header">
-      <div class="logo-mark small">AMP</div>
-      <h2>Connect to Firebase</h2>
-      <p>Paste your Firebase project config below.</p>
-    </div>
-    <div class="config-form">
-      <label>API Key            <input type="text" id="cfg_apiKey"            placeholder="AIzaSy…"/></label>
-      <label>Auth Domain        <input type="text" id="cfg_authDomain"        placeholder="your-app.firebaseapp.com"/></label>
-      <label>Project ID         <input type="text" id="cfg_projectId"         placeholder="your-app-id"/></label>
-      <label>Storage Bucket     <input type="text" id="cfg_storageBucket"     placeholder="your-app.appspot.com"/></label>
-      <label>Messaging Sender ID<input type="text" id="cfg_messagingSenderId" placeholder="123456789"/></label>
-      <label>App ID             <input type="text" id="cfg_appId"             placeholder="1:123:web:abc…"/></label>
-    </div>
-    <div class="modal-actions">
-      <button class="btn-primary" onclick="saveFirebaseConfig()">Connect</button>
-      <button class="btn-ghost"   onclick="useDemoMode()">Demo Mode (no Firebase)</button>
-    </div>
-    <p class="modal-note">Firebase Console → Project Settings → Your Apps → SDK setup</p>
-  </div>
-</div>
 
 <!-- ── CONFIRM MODAL ──────────────────────────────────────────────────── -->
 <div class="modal-overlay" id="confirmModal" style="display:none">
