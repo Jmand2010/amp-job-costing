@@ -1233,25 +1233,23 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-hei
 
 
 <!-- ════════════════════════════════════════════════════════════════════
-     AMP JOB COSTING — FIREBASE CONFIG
-     Replace every value below with your own Firebase project values.
-     Find them at: console.firebase.google.com
-       → Your project → Project Settings → Your Apps → SDK setup
+     AMP JOB COSTING — FIREBASE CONFIG  ★ YOUR CONFIG IS ALREADY IN HERE ★
+     If you need to change it, find the yellow highlighted block below.
      ════════════════════════════════════════════════════════════════════ -->
 <script type="module">
 
-// ╔══════════════════════════════════════════════════════════════════════╗
-// ║  STEP 1 OF 1 — PASTE YOUR FIREBASE CONFIG HERE                      ║
-// ╚══════════════════════════════════════════════════════════════════════╝
-const firebaseConfig = {
-  apiKey: "AIzaSyCWMloVUAwu2O9YNPPCF1ytkXWq1T_FHTE",
-  authDomain: "amp-job-costing.firebaseapp.com",
-  projectId: "amp-job-costing",
-  storageBucket: "amp-job-costing.firebasestorage.app",
-  messagingSenderId: "195136393604",
-  appId: "1:195136393604:web:403be4360ed0f3cc754dd1"
+/* ┌─────────────────────────────────────────────────────────────────────┐
+   │  ★★★  FIREBASE CONFIG — EDIT HERE IF YOU NEED TO CHANGE IT  ★★★   │
+   └─────────────────────────────────────────────────────────────────────┘ */
+const FIREBASE_CONFIG = {
+  apiKey:            "AIzaSyCWMloVUAwu2O9YNPPCF1ytkXWq1T_FHTE",   // ← YOUR API KEY
+  authDomain:        "amp-job-costing.firebaseapp.com",             // ← YOUR AUTH DOMAIN
+  projectId:         "amp-job-costing",                             // ← YOUR PROJECT ID
+  storageBucket:     "amp-job-costing.firebasestorage.app",         // ← YOUR STORAGE BUCKET
+  messagingSenderId: "195136393604",                                // ← YOUR SENDER ID
+  appId:             "1:195136393604:web:403be4360ed0f3cc754dd1",   // ← YOUR APP ID
 };
-// ══════════════════════════════════════════════════════════════════════
+/* └─────────────────────────────────────────────────────────────────────┘ */
 
 import { initializeApp }    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getFirestore, collection, doc, setDoc, getDocs, deleteDoc, writeBatch }
