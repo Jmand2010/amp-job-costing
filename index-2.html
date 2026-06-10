@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AMP Job Costing | Asphalt Maintenance & Paving Solutions</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+
+<!-- ── TOP NAV ─────────────────────────────────────────────────────────── -->
+<header class="topbar no-print">
+  <div class="topbar-left">
+    <div class="logo-mark">AMP</div>
+    <div class="logo-text">
+      <span class="logo-main">Job Costing</span>
+      <span class="logo-sub">Asphalt Maintenance &amp; Paving Solutions</span>
+    </div>
+  </div>
+  <nav class="topbar-nav">
+    <button class="nav-btn active" data-view="dashboard" onclick="showView('dashboard')">📊 Dashboard</button>
+    <button class="nav-btn" data-view="jobs"      onclick="showView('jobs')">🏗 Jobs</button>
+    <button class="nav-btn" data-view="detail"    onclick="showView('detail')">📋 Detail</button>
+    <button class="nav-btn" data-view="search"    onclick="showView('search')">🔍 Search</button>
+    <button class="nav-btn" data-view="import"    onclick="showView('import')">📥 Import</button>
+    <button class="nav-btn" data-view="config"    onclick="showView('config')">⚙ Config</button>
+    <button class="nav-btn" data-view="insights"  onclick="showView('insights')">💡 Insights</button>
+  </nav>
+  <div class="topbar-right">
+    <button class="icon-btn" onclick="toggleTheme()" id="themeBtn" title="Toggle theme">🌙</button>
+    <div class="print-menu-wrap">
+      <button class="icon-btn" onclick="togglePrintMenu()" title="Print / Export">🖨️</button>
+      <div class="print-menu" id="printMenu">
+        <button onclick="printView('dashboard')">Print Dashboard</button>
+        <button onclick="printView('jobs')">Print Job List</button>
+        <button onclick="printView('detail')">Print Job Detail</button>
+        <button onclick="printView('search')">Print Search Results</button>
+        <hr/>
+        <button onclick="exportCSV('jobs')">Download Jobs CSV</button>
+        <button onclick="exportCSV('detail')">Download Job Detail CSV</button>
+        <button onclick="exportCSV('search')">Download Search Results CSV</button>
+      </div>
+    </div>
+    <div class="user-badge" id="userBadge">Loading…</div>
+  </div>
+</header>
+
+<!-- ── FIREBASE MODAL ─────────────────────────────────────────────────── -->
+<div class="modal-overlay" id="configModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="logo-mark small">AMP</div>
+      <h2>Connect to Firebase</h2>
+      <p>Paste your Firebase project config below.</p>
+    </div>
+    <div class="config-form">
+      <label>API Key            <input type="text" id="cfg_apiKey"            placeholder="AIzaSy…"/></label>
+      <label>Auth Domain        <input type="text" id="cfg_authDomain"        placeholder="your-app.firebaseapp.com"/></label>
+      <label>Project ID         <input type="text" id="cfg_projectId"         placeholder="your-app-id"/></label>
+      <label>Storage Bucket     <input type="text" id="cfg_storageBucket"     placeholder="your-app.appspot.com"/></label>
+      <label>Messaging Sender ID<input type="text" id="cfg_messagingSenderId" placeholder="123456789"/></label>
+      <label>App ID             <input type="text" id="cfg_appId"             placeholder="1:123:web:abc…"/></label>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-primary" onclick="saveFirebaseConfig()">Connect</button>
+      <button class="btn-ghost"   onclick="useDemoMode()">Demo Mode (no Firebase)</button>
+    </div>
+    <p class="modal-note">Firebase Console → Project Settings → Your Apps → SDK setup</p>
+  </div>
+</div>
+
+<!-- ── CONFIRM MODAL ──────────────────────────────────────────────────── -->
+<div class="modal-overlay" id="confirmModal" style="display:none">
+  <div class="modal-box" style="max-width:420px">
+    <div class="modal-header">
+      <h2 id="confirmTitle">Confirm Change</h2>
+      <p id="confirmMsg"></p>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-primary" id="confirmOkBtn">Confirm</button>
+      <button class="btn-ghost"   onclick="closeConfirm()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── TOAST ──────────────────────────────────────────────────────────── -->
+<div id="toast" class="toast"></div>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     DASHBOARD
+══════════════════════════════════════════════════════════════════════ -->
+<main class="view active" id="view-dashboard">
+  <div class="view-header print-header">
+    <h1>Estimating Accuracy Dashboard</h1>
+    <span class="view-sub" id="dashJobCount"></span>
+  </div>
+  <div class="kpi-strip">
+    <div class="kpi-card kpi-blue">  <div class="kpi-label">Total Est. Cost</div><div class="kpi-value" id="kpi_estCost">$0</div></div>
+    <div class="kpi-card kpi-green"> <div class="kpi-label">Total Act. Cost</div><div class="kpi-value" id="kpi_actCost">$0</div></div>
+    <div class="kpi-card kpi-amber" id="kpi_varCard">   <div class="kpi-label">Total Variance</div><div class="kpi-value" id="kpi_var">$0</div></div>
+    <div class="kpi-card kpi-purple" id="kpi_varPctCard"><div class="kpi-label">Overall Var %</div> <div class="kpi-value" id="kpi_varPct">—</div></div>
+    <div class="kpi-card kpi-dark">  <div class="kpi-label">Total Jobs</div>    <div class="kpi-value" id="kpi_jobCount">0</div></div>
+  </div>
+  <div class="section-card">
+    <div class="section-title">Service-Level Accuracy — All Jobs Combined</div>
+    <div class="table-scroll">
+      <table class="data-table">
+        <thead><tr>
+          <th class="col-service">Service</th>
+          <th>Est Hrs</th><th>Act Hrs</th><th>Hr Var</th><th>Hr Var%</th>
+          <th>Est Labor $</th><th>Act Labor $</th><th>Labor Var $</th>
+          <th>Est Matl $</th><th>Act Matl $</th><th>Matl Var $</th>
+          <th>Est Equip $</th><th>Act Equip $</th><th>Equip Var $</th>
+          <th>Est Total $</th><th>Act Total $</th><th>Total Var $</th><th>Var %</th>
+        </tr></thead>
+        <tbody id="dashServiceBody"></tbody>
+        <tfoot id="dashServiceFoot"></tfoot>
+      </table>
+    </div>
+  </div>
+</main>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     JOB LIST
+══════════════════════════════════════════════════════════════════════ -->
+<main class="view" id="view-jobs">
+  <div class="view-header print-header">
+    <h1>Job List</h1>
+    <div class="view-actions no-print">
+      <button class="btn-primary" onclick="openNewJobModal()">+ New Job</button>
+    </div>
+  </div>
+  <div class="filter-bar no-print">
+    <div class="filter-group"><label class="filter-label">🔍 Quick Search</label>
+      <input type="text" id="jl_text" class="filter-input" placeholder="Job #, name, client…" oninput="filterJobList()"/></div>
+    <div class="filter-group"><label class="filter-label">Status</label>
+      <select id="jl_status" class="filter-select" onchange="filterJobList()">
+        <option value="">All</option><option>Scheduled</option><option>In Progress</option><option>Complete</option><option>On Hold</option>
+      </select></div>
+    <div class="filter-group"><label class="filter-label">Date From</label>
+      <input type="date" id="jl_dateFrom" class="filter-input" onchange="filterJobList()"/></div>
+    <div class="filter-group"><label class="filter-label">Date To</label>
+      <input type="date" id="jl_dateTo" class="filter-input" onchange="filterJobList()"/></div>
+    <div class="filter-group"><label class="filter-label">Service Used</label>
+      <select id="jl_service" class="filter-select" onchange="filterJobList()"><option value="">Any Service</option></select></div>
+    <div class="filter-group filter-group-btn">
+      <button class="btn-ghost btn-sm" onclick="clearJobListFilters()">✕ Clear</button>
+      <span class="filter-count" id="jl_count"></span>
+    </div>
+  </div>
+  <!-- Bulk action bar -->
+  <div class="bulk-action-bar no-print" id="bulkActionBar" style="display:none">
+    <span id="bulkSelectedCount">0 jobs selected</span>
+    <button class="btn-danger btn-sm" onclick="bulkDeleteJobs()">🗑 Delete Selected Jobs</button>
+    <button class="btn-ghost btn-sm" onclick="clearJobSelection()">✕ Clear Selection</button>
+  </div>
+
+  <div class="section-card">
+    <div class="table-scroll">
+      <table class="data-table">
+        <thead><tr>
+          <th class="no-print" style="width:36px"><input type="checkbox" id="selectAllJobs" onclick="toggleSelectAllJobs(this)" title="Select all"/></th>
+          <th>Job #</th><th>Job Name</th><th>Client</th><th>Date</th>
+          <th>Est Hrs</th><th>Act Hrs</th><th>Est Cost</th><th>Act Cost</th>
+          <th>Var $</th><th>Var %</th><th>Status</th><th class="no-print">Actions</th>
+        </tr></thead>
+        <tbody id="jobListBody"></tbody>
+        <tfoot id="jobListFoot"></tfoot>
+      </table>
+    </div>
+  </div>
+</main>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     JOB DETAIL
+══════════════════════════════════════════════════════════════════════ -->
+<main class="view" id="view-detail">
+  <div class="view-header print-header">
+    <div class="detail-header-left">
+      <h1>Job Cost Detail</h1>
+      <div class="job-selector no-print">
+        <select id="jobSelector" onchange="loadJobDetail()"><option value="">— Select a Job —</option></select>
+      </div>
+    </div>
+    <div class="view-actions no-print" id="detailActions" style="display:none">
+      <button class="btn-ghost"   onclick="clearDetailForm()">Clear</button>
+      <button class="btn-primary" onclick="saveJobDetail()">💾 Save</button>
+    </div>
+  </div>
+  <div class="job-info-bar" id="jobInfoBar" style="display:none">
+    <span id="infoJobNum"></span><span id="infoJobName"></span>
+    <span id="infoClient"></span><span id="infoDate"></span>
+    <span id="infoStatus" class="status-badge"></span>
+  </div>
+  <div class="kpi-strip small" id="detailKpis" style="display:none">
+    <div class="kpi-card kpi-blue">  <div class="kpi-label">Est Hours</div>  <div class="kpi-value" id="dk_estHrs">0</div></div>
+    <div class="kpi-card kpi-green"> <div class="kpi-label">Act Hours</div>  <div class="kpi-value" id="dk_actHrs">0</div></div>
+    <div class="kpi-card kpi-blue">  <div class="kpi-label">Est Cost</div>   <div class="kpi-value" id="dk_estCost">$0</div></div>
+    <div class="kpi-card kpi-green"> <div class="kpi-label">Act Cost</div>   <div class="kpi-value" id="dk_actCost">$0</div></div>
+    <div class="kpi-card kpi-amber"> <div class="kpi-label">Variance $</div> <div class="kpi-value" id="dk_var">$0</div></div>
+    <div class="kpi-card kpi-purple"><div class="kpi-label">Var %</div>      <div class="kpi-value" id="dk_varPct">—</div></div>
+  </div>
+  <div id="detailPlaceholder" class="placeholder-msg">
+    <div class="placeholder-icon">📋</div>
+    <p>Select a job above or <a href="#" onclick="openNewJobModal()">create a new job</a>.</p>
+  </div>
+  <div id="detailContent" style="display:none"></div>
+</main>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     SEARCH
+══════════════════════════════════════════════════════════════════════ -->
+<main class="view" id="view-search">
+  <div class="view-header print-header">
+    <h1>Search &amp; Filter Jobs</h1>
+    <span class="view-sub" id="searchResultCount"></span>
+  </div>
+  <div class="search-panel no-print">
+    <div class="search-panel-title">🔍 Search Filters</div>
+    <div class="search-grid">
+      <div class="search-field">
+        <label>Free-Text Search</label>
+        <input type="text" id="s_text" class="filter-input wide" placeholder="Job #, name, client, notes, equipment…" oninput="runSearch()"/>
+        <div class="field-hint">Searches all fields and all phase notes</div>
+      </div>
+      <div class="search-field">
+        <label>Service Type</label>
+        <select id="s_service" class="filter-select" onchange="runSearch()"><option value="">Any Service</option></select>
+        <div class="field-hint">Jobs that used this service</div>
+      </div>
+      <div class="search-field">
+        <label>Equipment / Keyword in Notes</label>
+        <input type="text" id="s_notes" class="filter-input" placeholder="e.g. backhoe, Kobelco, roller…" oninput="runSearch()"/>
+        <div class="field-hint">Searches phase notes for equipment</div>
+      </div>
+      <div class="search-field">
+        <label>Laborer</label>
+        <input type="text" id="s_laborer" class="filter-input" placeholder="e.g. James Yauch…" oninput="runSearch()"/>
+        <div class="field-hint">Find jobs a specific person worked</div>
+      </div>
+      <div class="search-field">
+        <label>Crew</label>
+        <input type="text" id="s_crew" class="filter-input" placeholder="e.g. Paving Crew…" oninput="runSearch()"/>
+      </div>
+      <div class="search-field">
+        <label>Job Status</label>
+        <select id="s_status" class="filter-select" onchange="runSearch()">
+          <option value="">All</option><option>Scheduled</option><option>In Progress</option><option>Complete</option><option>On Hold</option>
+        </select>
+      </div>
+      <div class="search-field">
+        <label>Date From</label>
+        <input type="date" id="s_dateFrom" class="filter-input" onchange="runSearch()"/>
+      </div>
+      <div class="search-field">
+        <label>Date To</label>
+        <input type="date" id="s_dateTo" class="filter-input" onchange="runSearch()"/>
+      </div>
+      <div class="search-field">
+        <label>Variance Direction</label>
+        <select id="s_varDir" class="filter-select" onchange="runSearch()">
+          <option value="">Any</option>
+          <option value="over">Over Budget</option>
+          <option value="under">Under Budget</option>
+          <option value="zero">On Budget (±5%)</option>
+        </select>
+      </div>
+      <div class="search-field">
+        <label>Min Total Cost $</label>
+        <input type="number" id="s_minCost" class="filter-input" placeholder="0" oninput="runSearch()"/>
+      </div>
+      <div class="search-field">
+        <label>Max Total Cost $</label>
+        <input type="number" id="s_maxCost" class="filter-input" placeholder="no limit" oninput="runSearch()"/>
+      </div>
+    </div>
+    <div class="search-panel-footer">
+      <button class="btn-primary" onclick="runSearch()">🔍 Search</button>
+      <button class="btn-ghost"   onclick="clearSearch()">✕ Clear All</button>
+      <span class="filter-count" id="searchResultCount2"></span>
+    </div>
+  </div>
+  <div id="searchMatchedServices" style="display:none" class="section-card">
+    <div class="section-title" id="searchMatchTitle">Matched Services</div>
+    <div id="searchMatchedBody" style="padding:12px 16px"></div>
+  </div>
+  <div class="section-card">
+    <div class="section-title">Search Results</div>
+    <div class="table-scroll">
+      <table class="data-table">
+        <thead><tr>
+          <th>Job #</th><th>Job Name</th><th>Client</th><th>Date</th>
+          <th>Services</th><th>Matched Notes</th>
+          <th>Est Cost</th><th>Act Cost</th><th>Var $</th><th>Var %</th><th>Status</th>
+          <th class="no-print">Open</th>
+        </tr></thead>
+        <tbody id="searchResultsBody"></tbody>
+        <tfoot id="searchResultsFoot"></tfoot>
+      </table>
+    </div>
+  </div>
+</main>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     IMPORT
+══════════════════════════════════════════════════════════════════════ -->
+<main class="view" id="view-import">
+  <div class="view-header">
+    <h1>Import CSV</h1>
+    <span class="view-sub">Import job data from your estimating software</span>
+  </div>
+
+  <!-- Step 1: Upload -->
+  <div class="section-card" id="importStep1">
+    <div class="section-title">Step 1 — Upload CSV File</div>
+    <div class="import-drop-zone" id="dropZone"
+         ondragover="event.preventDefault();this.classList.add('drag-over')"
+         ondragleave="this.classList.remove('drag-over')"
+         ondrop="handleDrop(event)">
+      <div class="drop-icon">📄</div>
+      <p>Drag &amp; drop your CSV here, or</p>
+      <label class="btn-primary" style="cursor:pointer;display:inline-block;margin-top:8px">
+        Browse File <input type="file" accept=".csv" id="csvFileInput" style="display:none" onchange="handleFileSelect(event)"/>
+      </label>
+      <p class="drop-hint">Supports exports from your estimating software (e.g. ServiceTitan, Jobber, or the AMP format)</p>
+    </div>
+    <div id="importFileInfo" style="display:none" class="import-file-info">
+      <span id="importFileName"></span>
+      <span id="importRowCount"></span>
+      <button class="btn-ghost btn-sm" onclick="resetImport()">✕ Remove</button>
+    </div>
+  </div>
+
+  <!-- Step 2: Column Mapping -->
+  <div class="section-card" id="importStep2" style="display:none">
+    <div class="section-title">Step 2 — Map Columns</div>
+    <p class="import-hint">We detected the following columns in your file. Confirm or adjust the mappings below.</p>
+    <div class="mapping-grid" id="mappingGrid"></div>
+    <div class="import-auto-badge" id="importAutoBadge" style="display:none">
+      ✅ AMP format detected — columns auto-mapped. Review and confirm below.
+    </div>
+    <div style="padding:16px;border-top:1px solid var(--border);margin-top:8px">
+      <button class="btn-primary" onclick="previewImport()">Preview Import →</button>
+    </div>
+  </div>
+
+  <!-- Step 3: Preview & Service Mapping -->
+  <div class="section-card" id="importStep3" style="display:none">
+    <div class="section-title">Step 3 — Service Name Mapping</div>
+    <p class="import-hint">Map your CSV service names to AMP service types. Sub-phases (e.g. "1st LIFT BINDER-HILL") will become separate phases of the same service.</p>
+    <div class="mapping-grid" id="serviceMappingGrid"></div>
+    <div style="padding:16px;border-top:1px solid var(--border);margin-top:8px">
+      <button class="btn-primary" onclick="showImportPreview()">Review Data →</button>
+      <button class="btn-ghost"   onclick="goToStep(2)">← Back</button>
+    </div>
+  </div>
+
+  <!-- Step 4: Data Preview -->
+  <div class="section-card" id="importStep4" style="display:none">
+    <div class="section-title">Step 4 — Review &amp; Confirm Import</div>
+    <div id="importPreviewContent"></div>
+    <div style="padding:16px;border-top:1px solid var(--border)">
+      <button class="btn-primary" onclick="confirmImport()">✅ Import into Firebase</button>
+      <button class="btn-ghost"   onclick="goToStep(3)">← Back</button>
+    </div>
+  </div>
+</main>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     CONFIG
+══════════════════════════════════════════════════════════════════════ -->
+<main class="view" id="view-config">
+  <div class="view-header">
+    <h1>Configuration</h1>
+    <span class="view-sub">Rates, equipment, labor, materials — all editable with confirmation</span>
+  </div>
+
+  <!-- Config tabs -->
+  <div class="cfg-tabs no-print">
+    <button class="cfg-tab active" onclick="showCfgTab('labor')">👷 Labor</button>
+    <button class="cfg-tab" onclick="showCfgTab('equipment')">🚜 Equipment</button>
+    <button class="cfg-tab" onclick="showCfgTab('equipgroups')">📦 Equip Groups</button>
+    <button class="cfg-tab" onclick="showCfgTab('materials')">🪨 Materials</button>
+    <button class="cfg-tab" onclick="showCfgTab('services')">🛠 Services</button>
+    <button class="cfg-tab" onclick="showCfgTab('phases')">🔢 Phase Labels</button>
+  </div>
+
+  <!-- Labor -->
+  <div class="cfg-panel active" id="cfgPanel-labor">
+    <div class="section-card">
+      <div class="section-title">Labor Rates
+        <button class="btn-primary btn-sm" style="float:right;margin-top:-2px" onclick="addConfigItem('labor')">+ Add Laborer</button>
+      </div>
+      <div class="table-scroll">
+        <table class="data-table">
+          <thead><tr><th style="text-align:left">Name</th><th>Rate ($/hr)</th><th>Role</th><th>Active</th><th class="no-print">Actions</th></tr></thead>
+          <tbody id="cfg_labor_body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Equipment -->
+  <div class="cfg-panel" id="cfgPanel-equipment">
+    <div class="section-card">
+      <div class="section-title">Equipment Rates
+        <button class="btn-primary btn-sm" style="float:right;margin-top:-2px" onclick="addConfigItem('equipment')">+ Add Equipment</button>
+      </div>
+      <div class="table-scroll">
+        <table class="data-table">
+          <thead><tr><th style="text-align:left">Equipment Name</th><th>Rate ($/hr)</th><th>Group</th><th>Active</th><th class="no-print">Actions</th></tr></thead>
+          <tbody id="cfg_equipment_body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Equipment Groups -->
+  <div class="cfg-panel" id="cfgPanel-equipgroups">
+    <div class="section-card">
+      <div class="section-title">Equipment Groups
+        <button class="btn-primary btn-sm" style="float:right;margin-top:-2px" onclick="addConfigItem('equipgroups')">+ Add Group</button>
+      </div>
+      <p style="padding:8px 16px;font-size:12px;color:var(--text2)">Groups let you categorize equipment (e.g. "Trucks", "Pavers", "Rollers") for reporting.</p>
+      <div class="table-scroll">
+        <table class="data-table">
+          <thead><tr><th style="text-align:left">Group Name</th><th style="text-align:left">Description</th><th class="no-print">Actions</th></tr></thead>
+          <tbody id="cfg_equipgroups_body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Materials -->
+  <div class="cfg-panel" id="cfgPanel-materials">
+    <div class="section-card">
+      <div class="section-title">Materials
+        <button class="btn-primary btn-sm" style="float:right;margin-top:-2px" onclick="addConfigItem('materials')">+ Add Material</button>
+      </div>
+      <div class="table-scroll">
+        <table class="data-table">
+          <thead><tr><th style="text-align:left">Material Name</th><th>Unit</th><th>Rate</th><th>Category</th><th>Active</th><th class="no-print">Actions</th></tr></thead>
+          <tbody id="cfg_materials_body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Services -->
+  <div class="cfg-panel" id="cfgPanel-services">
+    <div class="section-card">
+      <div class="section-title">Service Types
+        <button class="btn-primary btn-sm" style="float:right;margin-top:-2px" onclick="addConfigItem('services')">+ Add Service</button>
+      </div>
+      <p style="padding:8px 16px;font-size:12px;color:var(--text2)">These are the service types that appear in Job Detail. Reordering and renaming will take effect on new jobs.</p>
+      <div class="table-scroll">
+        <table class="data-table">
+          <thead><tr><th>#</th><th style="text-align:left">Service Name</th><th>Active</th><th class="no-print">Actions</th></tr></thead>
+          <tbody id="cfg_services_body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase Labels -->
+  <div class="cfg-panel" id="cfgPanel-phases">
+    <div class="section-card">
+      <div class="section-title">Phase Count &amp; Labels</div>
+      <p style="padding:8px 16px;font-size:12px;color:var(--text2)">Set how many phases appear per service in Job Detail (1–10). Increase phases to track more sub-sections per service.</p>
+      <div style="padding:16px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+        <label style="font-weight:600;font-size:13px">Phases per Service:
+          <input type="number" id="cfg_phaseCount" min="1" max="10" value="5"
+                 style="width:70px;margin-left:8px;padding:6px 10px;border:1px solid var(--border2);border-radius:6px;font-size:14px;background:var(--surface2);color:var(--text)"/>
+        </label>
+        <button class="btn-primary" onclick="savePhaseCount()">Save Phase Count</button>
+      </div>
+      <div style="padding:0 16px 16px">
+        <p style="font-size:12px;color:var(--text2);margin-bottom:8px">Phase label overrides (optional — leave blank to use "Phase 1", "Phase 2", etc.):</p>
+        <div id="phaseLabelInputs" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px"></div>
+        <button class="btn-ghost btn-sm" style="margin-top:12px" onclick="savePhaseLabels()">Save Labels</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Per-Equipment Drill-Down -->
+  <div class="section-card">
+    <div class="section-title">🚜 Equipment Accuracy — Per Machine</div>
+    <p style="padding:8px 16px 0;font-size:12px;color:var(--text2)">Tracks each piece of equipment across all jobs using phase notes and imported CSV data. Populated from CSV imports or manual notes entries.</p>
+    <div class="table-scroll">
+      <table class="data-table">
+        <thead><tr>
+          <th style="text-align:left">Equipment</th>
+          <th>Group</th>
+          <th>Jobs Used</th>
+          <th>Est Hours</th>
+          <th>Act Hours</th>
+          <th>Hr Var</th>
+          <th>Hr Var %</th>
+          <th>Est Cost $</th>
+          <th>Act Cost $</th>
+          <th>Cost Var $</th>
+          <th>Avg Overrun / Job</th>
+          <th>Rate ($/hr)</th>
+          <th>Verdict</th>
+        </tr></thead>
+        <tbody id="insightEquipBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Per-Employee Productivity -->
+  <div class="section-card">
+    <div class="section-title">👷 Employee / Crew Productivity</div>
+    <p style="padding:8px 16px 0;font-size:12px;color:var(--text2)">Aggregated from the Crew/Laborers field in Job Detail phases and CSV imports. Shows who consistently finishes under or over estimated hours.</p>
+    <div class="table-scroll">
+      <table class="data-table">
+        <thead><tr>
+          <th style="text-align:left">Employee / Crew Member</th>
+          <th>Jobs Appeared</th>
+          <th>Services Worked</th>
+          <th>Est Hrs (their phases)</th>
+          <th>Act Hrs (their phases)</th>
+          <th>Total Hr Var</th>
+          <th>Avg Hr Var / Job</th>
+          <th>Hr Var %</th>
+          <th>Est Labor $</th>
+          <th>Act Labor $</th>
+          <th>Labor Var $</th>
+          <th>Productivity Rating</th>
+        </tr></thead>
+        <tbody id="insightEmployeeBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Seasonal Trends -->
+  <div class="section-card">
+    <div class="section-title">📅 Seasonal Trends — Variance by Month &amp; Season</div>
+    <p style="padding:8px 16px 0;font-size:12px;color:var(--text2)">Compares estimating accuracy across seasons. Helps identify if weather, ground conditions, or crew availability affect your costs.</p>
+    <div id="insightSeasonalContent" style="padding:16px"></div>
+  </div>
+
+  <!-- Import History -->
+  <div class="section-card" id="importHistoryCard">
+    <div class="section-title">📜 Import History
+      <button class="btn-ghost btn-sm" style="float:right;margin-top:-2px" onclick="loadImportHistory()">↻ Refresh</button>
+    </div>
+    <p style="padding:8px 16px 0;font-size:12px;color:var(--text2)">Each CSV import is logged here. You can undo an entire import batch — this will delete all jobs that were created in that import.</p>
+    <div class="table-scroll">
+      <table class="data-table">
+        <thead><tr>
+          <th>Date / Time</th>
+          <th>File Name</th>
+          <th>Jobs Imported</th>
+          <th>Job Numbers</th>
+          <th>Imported By</th>
+          <th class="no-print">Actions</th>
+        </tr></thead>
+        <tbody id="importHistoryBody"></tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<!-- ── JOB MODAL ──────────────────────────────────────────────────────── -->
+<div class="modal-overlay" id="jobModal" style="display:none">
+  <div class="modal-box">
+    <div class="modal-header"><h2 id="jobModalTitle">New Job</h2></div>
+    <div class="config-form">
+      <label>Job #           <input type="text" id="jm_num"    placeholder="26-0057"/></label>
+      <label>Job Name        <input type="text" id="jm_name"   placeholder="Main Street Overlay"/></label>
+      <label>Client/Location <input type="text" id="jm_client" placeholder="City of Arcadia, WI"/></label>
+      <label>Start Date      <input type="date"  id="jm_date"/></label>
+      <label>Status
+        <select id="jm_status">
+          <option>Scheduled</option><option>In Progress</option><option>Complete</option><option>On Hold</option>
+        </select>
+      </label>
+      <label>Notes <input type="text" id="jm_notes" placeholder="Optional…"/></label>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-primary" onclick="saveJobMeta()">Save</button>
+      <button class="btn-ghost"   onclick="closeJobModal()">Cancel</button>
+      <button class="btn-danger"  id="deleteJobBtn" onclick="deleteCurrentJob()" style="display:none">Delete Job</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── CONFIG ITEM MODAL ──────────────────────────────────────────────── -->
+<div class="modal-overlay" id="cfgItemModal" style="display:none">
+  <div class="modal-box">
+    <div class="modal-header"><h2 id="cfgItemTitle">Add Item</h2></div>
+    <div class="config-form" id="cfgItemForm"></div>
+    <div class="modal-actions">
+      <button class="btn-primary" onclick="saveCfgItem()">Save</button>
+      <button class="btn-ghost"   onclick="closeCfgItemModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     VIEW: INSIGHTS & PROFITABILITY
+══════════════════════════════════════════════════════════════════════ -->
+<main class="view" id="view-insights">
+  <div class="view-header print-header">
+    <h1>Insights &amp; Profitability Analysis</h1>
+    <span class="view-sub">AI-powered recommendations to improve estimating accuracy and profit margins</span>
+  </div>
+
+  <!-- Profit Target Banner -->
+  <div class="insight-targets-bar no-print" id="insightTargetsBar">
+    <div class="targets-label">🎯 Company Profit Target:</div>
+    <div class="targets-input-wrap">
+      <span>Overall Margin Goal</span>
+      <input type="number" id="tgt_overall" min="0" max="100" step="1" value="20" class="tgt-input" oninput="renderInsights()"/>
+      <span>%</span>
+    </div>
+    <div class="targets-input-wrap">
+      <span>Flag jobs under</span>
+      <input type="number" id="tgt_flagPct" min="0" max="100" step="1" value="10" class="tgt-input" oninput="renderInsights()"/>
+      <span>% margin</span>
+    </div>
+    <button class="btn-primary btn-sm" onclick="saveInsightTargets()">Save Targets</button>
+  </div>
+
+  <!-- KPI health strip -->
+  <div class="kpi-strip" id="insightKpiStrip">
+    <div class="kpi-card kpi-blue">  <div class="kpi-label">Most Profitable Service</div><div class="kpi-value" id="ins_bestSvc" style="font-size:15px;line-height:1.2">—</div></div>
+    <div class="kpi-card kpi-green"> <div class="kpi-label">Avg Estimate Accuracy</div> <div class="kpi-value" id="ins_avgAcc">—</div></div>
+    <div class="kpi-card kpi-amber" id="ins_worstCard"><div class="kpi-label">Biggest Problem Service</div><div class="kpi-value" id="ins_worstSvc" style="font-size:15px;line-height:1.2">—</div></div>
+    <div class="kpi-card kpi-purple"><div class="kpi-label">Jobs Hitting Target Margin</div><div class="kpi-value" id="ins_onTarget">—</div></div>
+    <div class="kpi-card kpi-dark">  <div class="kpi-label">Est. Revenue Recovered<br><span style="font-size:9px;opacity:.7">if estimates were corrected</span></div><div class="kpi-value" id="ins_recovery">—</div></div>
+  </div>
+
+  <!-- Recommendations -->
+  <div class="section-card" id="insightRecsCard">
+    <div class="section-title">📋 Specific Recommendations — What to Fix</div>
+    <div id="insightRecs" style="padding:16px"></div>
+  </div>
+
+  <!-- Service profitability targets table -->
+  <div class="section-card">
+    <div class="section-title">🎯 Service-Level Profitability Targets &amp; Accuracy</div>
+    <div class="table-scroll">
+      <table class="data-table">
+        <thead><tr>
+          <th class="col-service">Service</th>
+          <th>Jobs</th>
+          <th>Avg Est $</th>
+          <th>Avg Act $</th>
+          <th>Avg Var %</th>
+          <th>Trend</th>
+          <th>Labor Var %</th>
+          <th>Matl Var %</th>
+          <th>Equip Var %</th>
+          <th>Target Margin %</th>
+          <th>Avg Actual Margin %</th>
+          <th>Margin Gap</th>
+          <th>Rec. Est Adjustment</th>
+          <th>Health</th>
+        </tr></thead>
+        <tbody id="insightSvcBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Job-level profitability ranking -->
+  <div class="section-card">
+    <div class="section-title">🏆 Job Profitability Ranking</div>
+    <div class="table-scroll">
+      <table class="data-table">
+        <thead><tr>
+          <th>Rank</th>
+          <th>Job #</th>
+          <th>Job Name</th>
+          <th>Est Cost</th>
+          <th>Act Cost</th>
+          <th>Variance $</th>
+          <th>Var %</th>
+          <th>Margin vs Target</th>
+          <th>Primary Issue</th>
+          <th>Status</th>
+        </tr></thead>
+        <tbody id="insightJobBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Labor vs Equipment vs Material breakdown -->
+  <div class="section-card">
+    <div class="section-title">🔍 Cost Category Deep Dive — Where Are You Losing Money?</div>
+    <div id="insightDeepDive" style="padding:16px"></div>
+  </div>
+</main>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
