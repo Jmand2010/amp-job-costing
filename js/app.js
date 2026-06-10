@@ -1440,9 +1440,20 @@ document.addEventListener("click",e=>{ if(!e.target.closest(".print-menu-wrap"))
   const saved=localStorage.getItem("amp_theme")||"light";
   document.documentElement.setAttribute("data-theme",saved);
   ge("themeBtn").textContent=saved==="dark"?"☀️":"🌙";
-  const cfg=getStoredFbConfig();
-  if(cfg&&cfg.apiKey&&cfg.projectId){ge("configModal").style.display="none";initFirebase(cfg);}
-  else{ge("configModal").style.display="flex";}
+
+  // ── YOUR FIREBASE CONFIG — paste your values here ──
+  const FIREBASE_CONFIG = {
+    apiKey: "AIzaSyCWMloVUAwu2O9YNPPCF1ytkXWq1T_FHTE",
+  authDomain: "amp-job-costing.firebaseapp.com",
+  projectId: "amp-job-costing",
+  storageBucket: "amp-job-costing.firebasestorage.app",
+  messagingSenderId: "195136393604",
+  appId: "1:195136393604:web:403be4360ed0f3cc754dd1"
+};
+  // ── END CONFIG ──────────────────────────────────────
+
+  ge("configModal").style.display="none";
+  initFirebase(FIREBASE_CONFIG);
 })();
 
 // ═══════════════════════════════════════════════════════════════════════════
