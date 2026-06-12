@@ -1,2379 +1,544 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>AMP Job Costing | Asphalt Maintenance & Paving Solutions</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Johnson Tractor Daily Planner</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
-/* ── Variables ── */
-:root{
-  --bg:#F2F4F7;--surface:#FFFFFF;--surface2:#F8F9FB;--border:#DDE1E9;--border2:#C8CDD8;
-  --text:#1A2232;--text2:#4A5568;--text3:#8A96A8;
-  --navy:#1A2B3C;--navy2:#2E4A6B;--amber:#E8A020;--amber-dk:#C07010;
-  --green:#2E7D32;--green-lt:#E8F5E9;--red:#C62828;--red-lt:#FFEBEE;
-  --purple:#6A1B9A;--row-alt:#F5F8FC;
-  --shadow:0 2px 8px rgba(0,0,0,.08);--shadow-lg:0 8px 32px rgba(0,0,0,.12);
-  --radius:8px;--radius-lg:12px;--topbar-h:56px;
-  --font-head:'Barlow Condensed',sans-serif;--font-body:'Barlow',sans-serif;
+/* ── DARK MODE — neutral dark, no color cast ── */
+:root {
+  --bg:#111214; --bg2:#1A1C20; --bg3:#22252B;
+  --border:rgba(255,255,255,0.09); --border2:rgba(255,255,255,0.18);
+  --text:#ECEEF2; --text2:#9CA3AF; --text3:#6B7280; --accent:#D4251C;
+  --shadow:rgba(0,0,0,0.5);
+  --ops:#D4251C;    --ops-bg:rgba(212,37,28,0.14);    --ops-t:#FCA5A5;
+  --sales:#4A8FE8;  --sales-bg:rgba(74,143,232,0.14); --sales-t:#93C5FD;
+  --admin:#D97706;  --admin-bg:rgba(217,119,6,0.14);  --admin-t:#FCD34D;
+  --comms:#8B7FE8;  --comms-bg:rgba(139,127,232,0.14);--comms-t:#C4B5FD;
+  --field:#E07C2A;  --field-bg:rgba(224,124,42,0.14); --field-t:#FDBA74;
+  --shared:#6B7280; --shared-bg:rgba(107,114,128,0.14);--shared-t:#D1D5DB;
+  --flex:#4B5563;   --flex-bg:rgba(75,85,99,0.14);   --flex-t:#9CA3AF;
+  --r:8px; --rlg:12px; --sw:230px;
+  --font:'DM Sans',sans-serif; --mono:'DM Mono',monospace;
 }
-[data-theme="dark"]{
-  --bg:#0F1923;--surface:#1A2535;--surface2:#1F2D40;--border:#2A3A50;--border2:#3A4D65;
-  --text:#E8EDF5;--text2:#9AAABB;--text3:#5A7080;--navy:#2A3F58;--navy2:#3A5278;
-  --amber:#F0B030;--amber-dk:#D09020;--green:#4CAF50;--green-lt:#1A3020;
-  --red:#EF5350;--red-lt:#2A1515;--purple:#AB47BC;--row-alt:#1E2D42;
-  --shadow:0 2px 8px rgba(0,0,0,.3);--shadow-lg:0 8px 32px rgba(0,0,0,.5);
+/* ── LIGHT MODE ── */
+body.light {
+  --bg:#F5F5F5; --bg2:#FFFFFF; --bg3:#EBEBEB;
+  --border:rgba(0,0,0,0.08); --border2:rgba(0,0,0,0.15);
+  --text:#111827; --text2:#374151; --text3:#9CA3AF; --accent:#B91C1C;
+  --shadow:rgba(0,0,0,0.07);
+  --ops:#B91C1C;    --ops-bg:rgba(185,28,28,0.09);    --ops-t:#B91C1C;
+  --sales:#1D6FD8;  --sales-bg:rgba(29,111,216,0.09); --sales-t:#1D6FD8;
+  --admin:#B45309;  --admin-bg:rgba(180,83,9,0.09);   --admin-t:#B45309;
+  --comms:#5B4FCC;  --comms-bg:rgba(91,79,204,0.09);  --comms-t:#5B4FCC;
+  --field:#C2410C;  --field-bg:rgba(194,65,12,0.09);  --field-t:#C2410C;
+  --shared:#374151; --shared-bg:rgba(55,65,81,0.09);  --shared-t:#374151;
+  --flex:#4B5563;   --flex-bg:rgba(75,85,99,0.09);    --flex-t:#4B5563;
 }
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{font-size:14px}
-body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-height:100vh;padding-top:var(--topbar-h);transition:background .2s,color .2s}
-/* ── Topbar ── */
-.topbar{position:fixed;top:0;left:0;right:0;height:var(--topbar-h);background:var(--navy);display:flex;align-items:center;padding:0 12px;gap:10px;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.3)}
-.topbar-left{display:flex;align-items:center;gap:10px;flex-shrink:0}
-.logo-mark{background:var(--amber);color:#000;font-family:var(--font-head);font-weight:800;font-size:17px;letter-spacing:1px;padding:4px 8px;border-radius:4px}
-.logo-text{display:flex;flex-direction:column;line-height:1.1}
-.logo-main{font-family:var(--font-head);font-weight:700;font-size:15px;color:#fff}
-.logo-sub{font-size:10px;color:rgba(255,255,255,.5)}
-.topbar-nav{display:flex;gap:3px;flex:1;justify-content:center;flex-wrap:wrap}
-.nav-btn{font-family:var(--font-head);font-size:12px;font-weight:600;color:rgba(255,255,255,.65);background:transparent;border:none;padding:5px 10px;border-radius:6px;cursor:pointer;transition:all .15s;white-space:nowrap}
-.nav-btn:hover{background:rgba(255,255,255,.1);color:#fff}
-.nav-btn.active{background:var(--amber);color:#000}
-.topbar-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
-.icon-btn{background:rgba(255,255,255,.1);border:none;border-radius:6px;width:34px;height:34px;font-size:16px;cursor:pointer;color:#fff;transition:background .15s;display:flex;align-items:center;justify-content:center}
-.icon-btn:hover{background:rgba(255,255,255,.2)}
-.user-badge{font-size:11px;color:rgba(255,255,255,.55);max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.print-menu-wrap{position:relative}
-.print-menu{display:none;position:absolute;top:calc(100% + 6px);right:0;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow-lg);width:230px;z-index:200;overflow:hidden}
-.print-menu.open{display:block}
-.print-menu button{display:block;width:100%;padding:10px 14px;text-align:left;background:none;border:none;font-family:var(--font-body);font-size:13px;color:var(--text);cursor:pointer;transition:background .1s}
-.print-menu button:hover{background:var(--row-alt)}
-.print-menu hr{border:none;border-top:1px solid var(--border);margin:4px 0}
-/* ── Views ── */
-.view{display:none;padding:20px 20px 40px;max-width:1500px;margin:0 auto}
-.view.active{display:block}
-.view-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;gap:12px;flex-wrap:wrap}
-.view-header h1{font-family:var(--font-head);font-size:26px;font-weight:800;letter-spacing:.5px;color:var(--text);line-height:1}
-.view-sub{font-size:12px;color:var(--text3)}
-.view-actions{display:flex;gap:8px}
-.detail-header-left{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
-/* ── KPI strip ── */
-.kpi-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px}
-.kpi-strip.small{grid-template-columns:repeat(auto-fit,minmax(110px,1fr))}
-.kpi-card{border-radius:var(--radius-lg);padding:14px 16px;display:flex;flex-direction:column;gap:4px;box-shadow:var(--shadow)}
-.kpi-card.kpi-blue{background:var(--navy2);color:#fff}
-.kpi-card.kpi-green{background:var(--green);color:#fff}
-.kpi-card.kpi-amber{background:var(--amber);color:#000}
-.kpi-card.kpi-purple{background:var(--purple);color:#fff}
-.kpi-card.kpi-dark{background:var(--navy);color:#fff}
-.kpi-card.over{background:var(--red)!important;color:#fff!important}
-.kpi-card.under{background:var(--green)!important;color:#fff!important}
-.kpi-label{font-size:10px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;opacity:.8}
-.kpi-value{font-family:var(--font-head);font-size:24px;font-weight:800;line-height:1}
-.kpi-strip.small .kpi-value{font-size:19px}
-/* ── Cards & Tables ── */
-.section-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow);margin-bottom:20px;overflow:hidden}
-.section-title{font-family:var(--font-head);font-size:14px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:10px 16px;background:var(--navy);color:#fff;border-bottom:2px solid var(--amber)}
-.table-scroll{overflow-x:auto}
-.data-table{width:100%;border-collapse:collapse;font-size:12px}
-.data-table th{font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;background:var(--navy2);color:rgba(255,255,255,.9);padding:7px 9px;text-align:center;white-space:nowrap;border-right:1px solid rgba(255,255,255,.1)}
-.data-table th:first-child{text-align:left}
-.data-table td{padding:5px 9px;border-bottom:1px solid var(--border);border-right:1px solid var(--border);text-align:right;white-space:nowrap;color:var(--text2)}
-.data-table td:first-child{text-align:left;font-weight:600;color:var(--text)}
-.data-table td.center{text-align:center}
-.data-table tbody tr:nth-child(even) td{background:var(--row-alt)}
-.data-table tbody tr:hover td{background:rgba(46,74,107,.08)}
-.data-table tfoot td{font-family:var(--font-head);font-weight:700;font-size:12px;background:var(--navy)!important;color:#fff!important}
-.col-svc{min-width:190px}
-.subtotal-row td{background:var(--navy2)!important;color:rgba(255,255,255,.95)!important;font-family:var(--font-head);font-weight:700;font-size:12px}
-.phase-row td{background:var(--surface2)}
-.phase-lbl{color:var(--text3)!important;font-size:11px!important;font-weight:400!important}
-/* ── Variance colors ── */
-.var-over{color:var(--red)!important;font-weight:600}
-.var-under{color:var(--green)!important;font-weight:600}
-.var-zero{color:var(--text3)!important}
-/* ── Inputs in detail table ── */
-.cell-input{background:transparent;border:1px solid transparent;border-radius:3px;width:100%;min-width:74px;padding:3px 5px;text-align:right;font-family:var(--font-body);font-size:12px;color:#0044CC;transition:border-color .1s,background .1s}
-[data-theme="dark"] .cell-input{color:#6BA3FF}
-.cell-input:focus{outline:none;border-color:var(--amber);background:rgba(232,160,32,.08)}
-.cell-input:hover{border-color:var(--border2)}
-.cell-input.wide{text-align:left}
-/* ── Buttons ── */
-.btn-primary{font-family:var(--font-head);font-size:14px;font-weight:700;letter-spacing:.5px;background:var(--amber);color:#000;border:none;padding:8px 18px;border-radius:var(--radius);cursor:pointer;transition:background .15s,transform .1s}
-.btn-primary:hover{background:var(--amber-dk);transform:translateY(-1px)}
-.btn-ghost{font-family:var(--font-head);font-size:14px;font-weight:600;background:transparent;color:var(--text2);border:1px solid var(--border2);padding:8px 18px;border-radius:var(--radius);cursor:pointer;transition:all .15s}
-.btn-ghost:hover{background:var(--surface2)}
-.btn-danger{font-family:var(--font-head);font-size:14px;font-weight:600;background:var(--red-lt);color:var(--red);border:1px solid var(--red);padding:8px 18px;border-radius:var(--radius);cursor:pointer;transition:all .15s}
-.btn-danger:hover{background:var(--red);color:#fff}
-.btn-sm{font-size:11px;padding:4px 10px;border-radius:5px}
-.btn-edit{background:var(--navy2);color:#fff;border:none;font-family:var(--font-head);font-size:11px;font-weight:600;padding:4px 10px;border-radius:5px;cursor:pointer;transition:background .1s}
-.btn-edit:hover{background:var(--navy)}
-/* ── Status badges ── */
-.status-badge{font-size:11px;font-weight:600;padding:2px 8px;border-radius:99px;letter-spacing:.5px}
-.status-Scheduled{background:#E3F2FD;color:#1565C0}
-.status-In-Progress{background:#FFF8E1;color:#E65100}
-.status-Complete{background:var(--green-lt);color:var(--green)}
-.status-On-Hold{background:#EDE7F6;color:#4527A0}
-/* ── Job selector & info bar ── */
-.job-selector select{font-family:var(--font-body);font-size:14px;padding:7px 12px;border-radius:var(--radius);border:2px solid var(--amber);background:var(--surface);color:var(--text);cursor:pointer;min-width:240px}
-.job-selector select:focus{outline:none;box-shadow:0 0 0 3px rgba(232,160,32,.3)}
-.job-info-bar{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--amber);border-radius:var(--radius);padding:10px 16px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-bottom:16px;font-size:13px;color:var(--text2)}
-.job-info-bar span{font-weight:600;color:var(--text)}
-/* ── Modals ── */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;z-index:500;backdrop-filter:blur(3px)}
-.modal-box{background:var(--surface);border-radius:var(--radius-lg);padding:28px 32px;width:500px;max-width:95vw;box-shadow:var(--shadow-lg);max-height:90vh;overflow-y:auto}
-.modal-header{margin-bottom:20px}
-.modal-header h2{font-family:var(--font-head);font-size:22px;font-weight:800;color:var(--text);margin-top:8px}
-.modal-header p{font-size:13px;color:var(--text2);margin-top:4px}
-.config-form{display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
-.config-form label{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.5px}
-.config-form input,.config-form select,.config-form textarea{font-family:var(--font-body);font-size:14px;padding:8px 12px;border-radius:var(--radius);border:1px solid var(--border2);background:var(--surface2);color:var(--text);transition:border-color .15s}
-.config-form input:focus,.config-form select:focus,.config-form textarea:focus{outline:none;border-color:var(--amber);box-shadow:0 0 0 3px rgba(232,160,32,.2)}
-.modal-actions{display:flex;gap:10px;flex-wrap:wrap}
-/* ── Toast ── */
-.toast{position:fixed;bottom:24px;right:24px;background:var(--navy);color:#fff;padding:12px 20px;border-radius:var(--radius);font-size:13px;font-weight:600;box-shadow:var(--shadow-lg);transform:translateY(80px);opacity:0;transition:all .3s cubic-bezier(.34,1.56,.64,1);z-index:999;pointer-events:none;border-left:4px solid var(--amber)}
-.toast.show{transform:translateY(0);opacity:1}
-.toast.err{border-left-color:var(--red);background:var(--red)}
-.toast.ok{border-left-color:var(--green)}
-/* ── Placeholder ── */
-.placeholder-msg{text-align:center;padding:60px 20px;color:var(--text3)}
-.placeholder-icon{font-size:48px;margin-bottom:12px}
-.placeholder-msg p{font-size:15px}
-.placeholder-msg a{color:var(--amber);text-decoration:none;font-weight:600}
-/* ── Filter bars ── */
-.filter-bar{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:12px 16px;margin-bottom:16px;display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;box-shadow:var(--shadow)}
-.filter-group{display:flex;flex-direction:column;gap:4px;min-width:140px}
-.filter-group-btn{flex-direction:row;align-items:center;gap:8px;min-width:unset}
-.filter-label{font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--text3)}
-.filter-input,.filter-select{font-family:var(--font-body);font-size:13px;padding:7px 10px;border-radius:var(--radius);border:1px solid var(--border2);background:var(--surface2);color:var(--text);height:34px;transition:border-color .15s}
-.filter-input:focus,.filter-select:focus{outline:none;border-color:var(--amber);box-shadow:0 0 0 3px rgba(232,160,32,.2)}
-.filter-count{font-size:12px;font-weight:600;color:var(--amber);white-space:nowrap}
-/* ── Search panel ── */
-.search-panel{background:var(--surface);border:1px solid var(--border);border-top:3px solid var(--amber);border-radius:var(--radius-lg);margin-bottom:20px;box-shadow:var(--shadow);overflow:hidden}
-.search-panel-title{font-family:var(--font-head);font-size:14px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:12px 20px;background:var(--navy);color:#fff}
-.search-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:16px;padding:20px}
-.search-field{display:flex;flex-direction:column;gap:5px}
-.search-field label{font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--text2)}
-.field-hint{font-size:10px;color:var(--text3);line-height:1.3}
-.search-panel-footer{display:flex;align-items:center;gap:10px;padding:14px 20px;background:var(--surface2);border-top:1px solid var(--border)}
-.svc-tag{background:var(--navy2);color:#fff;font-size:11px;font-weight:600;padding:3px 9px;border-radius:99px}
-.matched-svcs{display:flex;flex-wrap:wrap;gap:5px}
-.notes-match{font-size:11px;color:var(--text2);max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.no-results{text-align:center;padding:40px 20px;color:var(--text3);font-size:14px}
-/* ── Config tabs ── */
-.cfg-tabs{display:flex;gap:4px;margin-bottom:16px;flex-wrap:wrap}
-.cfg-tab{font-family:var(--font-head);font-size:13px;font-weight:600;letter-spacing:.5px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:8px 16px;cursor:pointer;color:var(--text2);transition:all .15s}
-.cfg-tab:hover{background:var(--surface2)}
-.cfg-tab.active{background:var(--amber);color:#000;border-color:var(--amber)}
-.cfg-panel{display:none}
-.cfg-panel.active{display:block}
-.cfg-input{font-family:var(--font-body);font-size:12px;padding:4px 8px;border-radius:4px;border:1px solid var(--border2);background:var(--surface2);color:var(--text);width:90px;text-align:right;transition:border-color .15s}
-.cfg-input:focus{outline:none;border-color:var(--amber)}
-.cfg-input.wide{width:200px;text-align:left}
-.cfg-input.medium{width:130px;text-align:left}
-.save-btn{font-family:var(--font-head);font-size:11px;font-weight:700;background:var(--amber);color:#000;border:none;padding:4px 10px;border-radius:4px;cursor:pointer}
-.save-btn:hover{background:var(--amber-dk)}
-.toggle-btn{font-size:16px;cursor:pointer;background:none;border:none;line-height:1;padding:2px}
-.del-btn{font-family:var(--font-head);font-size:11px;font-weight:700;background:var(--red-lt);color:var(--red);border:1px solid var(--red);padding:3px 9px;border-radius:4px;cursor:pointer}
-.del-btn:hover{background:var(--red);color:#fff}
-/* ── Import ── */
-.drop-zone{border:2px dashed var(--border2);border-radius:var(--radius-lg);padding:40px 20px;text-align:center;background:var(--surface2);transition:all .2s;margin:16px;cursor:pointer}
-.drop-zone:hover,.drop-zone.over{border-color:var(--amber);background:rgba(232,160,32,.06)}
-.drop-icon{font-size:48px;margin-bottom:12px}
-.drop-hint{font-size:11px;color:var(--text3);margin-top:8px}
-.import-hint{font-size:13px;color:var(--text2);padding:10px 16px}
-.map-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;padding:16px}
-.map-row{display:flex;flex-direction:column;gap:4px}
-.map-row label{font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--text2)}
-.map-row select{font-family:var(--font-body);font-size:13px;padding:7px 10px;border-radius:var(--radius);border:1px solid var(--border2);background:var(--surface2);color:var(--text);height:34px}
-.map-row select:focus{outline:none;border-color:var(--amber)}
-.auto-badge{background:var(--green-lt);color:var(--green);font-size:13px;font-weight:600;padding:10px 16px;border-top:1px solid var(--border)}
-.file-info{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--green-lt);font-size:13px;font-weight:600;color:var(--green)}
-.import-job-hdr{background:var(--navy2);color:#fff;padding:8px 16px;font-family:var(--font-head);font-weight:700;font-size:13px;display:flex;gap:16px;flex-wrap:wrap}
-/* ── Bulk delete ── */
-.bulk-bar{background:var(--red-lt);border:1px solid var(--red);border-radius:var(--radius);padding:10px 16px;margin-bottom:12px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;animation:slideDown .2s ease}
-[data-theme="dark"] .bulk-bar{background:#2A1515}
-.bulk-bar-count{font-family:var(--font-head);font-size:14px;font-weight:700;color:var(--red);flex:1}
-@keyframes slideDown{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
-.job-cb{width:16px;height:16px;cursor:pointer;accent-color:var(--red)}
-.row-selected td{background:rgba(198,40,40,.07)!important}
-[data-theme="dark"] .row-selected td{background:rgba(239,83,80,.12)!important}
-/* ── Phase delete ── */
-.phase-del{background:none;border:none;color:var(--text3);font-size:13px;cursor:pointer;padding:2px 5px;border-radius:4px;line-height:1}
-.phase-del:hover{color:var(--red);background:var(--red-lt)}
-/* ── Import history ── */
-.undo-btn{font-family:var(--font-head);font-size:11px;font-weight:700;background:var(--red-lt);color:var(--red);border:1px solid var(--red);padding:4px 12px;border-radius:5px;cursor:pointer}
-.undo-btn:hover{background:var(--red);color:#fff}
-.batch-tag{font-size:10px;font-weight:700;background:var(--navy2);color:#fff;padding:2px 7px;border-radius:99px}
-/* ── Insights ── */
-.targets-bar{background:var(--navy);border-radius:var(--radius-lg);padding:12px 20px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin-bottom:20px;box-shadow:var(--shadow)}
-.targets-lbl{font-family:var(--font-head);font-size:14px;font-weight:700;color:var(--amber);letter-spacing:.5px;white-space:nowrap}
-.targets-wrap{display:flex;align-items:center;gap:6px;font-size:13px;color:rgba(255,255,255,.8)}
-.tgt-input{font-family:var(--font-body);font-size:14px;font-weight:700;width:64px;padding:4px 8px;border-radius:6px;border:2px solid var(--amber);background:rgba(255,255,255,.1);color:#fff;text-align:center}
-.tgt-input:focus{outline:none;background:rgba(255,255,255,.2)}
-.tgt-svc-input{font-family:var(--font-body);font-size:12px;width:60px;padding:3px 6px;border:1px solid var(--border2);border-radius:4px;background:var(--surface2);color:var(--text);text-align:center}
-.tgt-svc-input:focus{outline:none;border-color:var(--amber)}
-.rec-list{display:flex;flex-direction:column;gap:12px}
-.rec-card{border-radius:var(--radius);padding:14px 18px;display:flex;gap:14px;align-items:flex-start;border-left:5px solid transparent}
-.rec-card.critical{background:var(--red-lt);border-left-color:var(--red)}
-.rec-card.warning{background:#FFF8E1;border-left-color:var(--amber)}
-[data-theme="dark"] .rec-card.warning{background:#2A2000}
-.rec-card.good{background:var(--green-lt);border-left-color:var(--green)}
-.rec-icon{font-size:22px;flex-shrink:0;line-height:1}
-.rec-body{flex:1}
-.rec-title{font-family:var(--font-head);font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px}
-.rec-detail{font-size:12px;color:var(--text2);line-height:1.5}
-.rec-action{margin-top:7px;font-size:12px;font-weight:700;font-family:var(--font-head);text-transform:uppercase;color:var(--navy2);letter-spacing:.4px}
-[data-theme="dark"] .rec-action{color:var(--amber)}
-.rec-badge{font-family:var(--font-head);font-size:13px;font-weight:800;padding:3px 10px;border-radius:99px;white-space:nowrap;flex-shrink:0}
-.rb-red{background:var(--red);color:#fff}
-.rb-amber{background:var(--amber);color:#000}
-.rb-green{background:var(--green);color:#fff}
-.health-pill{font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px}
-.h-great{background:var(--green-lt);color:var(--green)}
-.h-ok{background:#E3F2FD;color:#1565C0}
-.h-watch{background:#FFF8E1;color:#E65100}
-.h-fix{background:var(--red-lt);color:var(--red)}
-.prod-ex{background:#E8F5E9;color:#2E7D32;font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px}
-.prod-gd{background:#E3F2FD;color:#1565C0;font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px}
-.prod-wt{background:#FFF8E1;color:#E65100;font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px}
-.prod-ov{background:var(--red-lt);color:var(--red);font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px}
-[data-theme="dark"] .prod-ex{background:#1A3020;color:#4CAF50}
-[data-theme="dark"] .prod-gd{background:#0D2035;color:#64B5F6}
-[data-theme="dark"] .prod-wt{background:#2A2000;color:#FFB74D}
-[data-theme="dark"] .prod-ov{background:#2A1515;color:#EF5350}
-.equip-fix{color:var(--red);font-weight:700;font-size:11px}
-.equip-wt{color:var(--amber);font-weight:700;font-size:11px}
-.equip-ok{color:var(--green);font-weight:700;font-size:11px}
-.seasonal-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-bottom:16px}
-.season-card{border-radius:var(--radius);padding:16px;border:1px solid var(--border);background:var(--surface2)}
-.season-card h3{font-family:var(--font-head);font-size:15px;font-weight:800;margin-bottom:6px}
-.season-spring{border-top:4px solid #66BB6A}
-.season-summer{border-top:4px solid #FFA726}
-.season-fall{border-top:4px solid #8D6E63}
-.season-winter{border-top:4px solid #42A5F5}
-.s-stat{display:flex;justify-content:space-between;font-size:12px;padding:3px 0;border-bottom:1px solid var(--border);color:var(--text2)}
-.s-stat:last-child{border-bottom:none}
-.s-val{font-weight:700;color:var(--text)}
-.dive-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
-.dive-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:14px}
-.dive-card h3{font-family:var(--font-head);font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px}
-.dive-row{display:flex;justify-content:space-between;font-size:12px;padding:4px 0;border-bottom:1px solid var(--border);color:var(--text2)}
-.dive-row:last-child{border-bottom:none}
-.dive-val{font-weight:600}
-.insight-empty{text-align:center;padding:50px 20px;color:var(--text3)}
-.insight-empty .ei{font-size:48px;margin-bottom:12px}
-/* ── Print ── */
-@media print{
-  body{padding-top:0!important;background:#fff!important;color:#000!important}
-  .no-print{display:none!important}
-  .view{display:none!important}
-  .view.print-target{display:block!important;padding:0!important}
-  .topbar{display:none!important}
-  .section-card{box-shadow:none!important;border:1px solid #ccc!important}
-  .section-title,.data-table th,.data-table tfoot td,.subtotal-row td,.kpi-card{-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  @page{margin:.5in}
-}
-@media(max-width:768px){
-  .topbar-nav{gap:2px}
-  .nav-btn{font-size:10px;padding:4px 6px}
-  .filter-bar,.search-grid{flex-direction:column}
-  .filter-group{min-width:100%}
-}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;transition:background .2s,color .2s;}
+.hidden{display:none!important;}
+
+/* THEME TOGGLE */
+.theme-toggle{position:fixed;top:14px;right:16px;z-index:200;background:var(--bg2);border:1px solid var(--border2);
+  border-radius:20px;padding:5px 13px;cursor:pointer;font-family:var(--font);font-size:12px;color:var(--text2);
+  display:flex;align-items:center;gap:6px;box-shadow:0 2px 8px var(--shadow);transition:background .15s;}
+.theme-toggle:hover{background:var(--bg3);color:var(--text);}
+
+/* LOGIN */
+#loginScreen{height:100vh;display:flex;align-items:center;justify-content:center;
+  background-image:repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(128,128,128,0.05) 39px,rgba(128,128,128,0.05) 40px),
+  repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(128,128,128,0.05) 39px,rgba(128,128,128,0.05) 40px);}
+.login-box{text-align:center;}
+.jt-logo-wrap{display:flex;justify-content:center;align-items:center;margin-bottom:14px;
+  background:var(--bg2);border:1px solid var(--border);border-radius:var(--rlg);
+  padding:18px 32px;display:inline-flex;}
+.jt-logo-wrap img{max-height:60px;max-width:260px;object-fit:contain;}
+body.light .jt-logo-wrap img.logo-dark{display:none;}
+body.light .jt-logo-wrap img.logo-light{display:block;}
+.jt-logo-wrap img.logo-light{display:none;}
+.logo-tagline{font-size:11px;color:var(--text3);letter-spacing:4px;text-transform:uppercase;margin-top:8px;margin-bottom:24px;}
+.login-card{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--rlg);padding:28px 32px;width:340px;box-shadow:0 4px 24px var(--shadow);}
+.login-prompt{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:2px;margin-bottom:16px;}
+.login-btns{display:flex;gap:12px;}
+.login-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:10px;padding:18px 10px;
+  background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);
+  color:var(--text);font-family:var(--font);font-size:14px;font-weight:500;cursor:pointer;transition:border-color .15s,background .15s;}
+.login-btn:hover{border-color:var(--accent);background:var(--ops-bg);}
+.avatar{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;}
+.login-hint{font-size:11px;color:var(--text3);margin-top:14px;}
+
+/* APP */
+#appScreen{display:flex;height:100vh;overflow:hidden;}
+.sidebar{width:var(--sw);background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;box-shadow:2px 0 8px var(--shadow);}
+.sb-top{padding:16px 14px 14px;border-bottom:1px solid var(--border);}
+.brand{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.brand-logo{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:6px 8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.brand-logo img{max-height:28px;max-width:100px;object-fit:contain;}
+body.light .brand-logo img.logo-dark{display:none;}
+body.light .brand-logo img.logo-light{display:block;}
+.brand-logo img.logo-light{display:none;}
+.brand-text{display:flex;flex-direction:column;min-width:0;}
+.brand-name{font-size:11px;color:var(--text3);white-space:nowrap;}
+.user-pill{display:flex;align-items:center;gap:8px;background:var(--bg3);border:1px solid var(--border);
+  border-radius:20px;padding:5px 12px;font-size:12px;color:var(--text2);}
+.user-pill .avatar{width:20px;height:20px;font-size:9px;}
+.sb-nav{padding:10px 8px;border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:2px;}
+.nav-btn{display:flex;align-items:center;gap:9px;width:100%;padding:8px 10px;background:none;border:none;
+  border-radius:var(--r);color:var(--text2);font-family:var(--font);font-size:13px;cursor:pointer;transition:background .12s,color .12s;}
+.nav-btn:hover{background:var(--bg3);color:var(--text);}
+.nav-btn.active{background:var(--ops-bg);color:var(--ops-t);}
+.badge{margin-left:auto;background:var(--accent);color:#fff;font-size:10px;font-weight:600;
+  min-width:18px;height:18px;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 5px;}
+.sb-days{padding:12px 8px;flex:1;overflow-y:auto;}
+.sb-days-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;padding-left:4px;}
+.day-btn{display:block;width:100%;padding:7px 10px;border:none;border-radius:var(--r);background:none;
+  color:var(--text2);font-family:var(--font);font-size:13px;text-align:left;cursor:pointer;transition:background .12s,color .12s;}
+.day-btn:hover{background:var(--bg3);color:var(--text);}
+.day-btn.active{background:var(--bg3);color:var(--text);font-weight:500;border-left:2px solid var(--accent);padding-left:8px;}
+.sb-bottom{padding:10px 8px;border-top:1px solid var(--border);}
+.signout-btn{display:flex;align-items:center;gap:8px;width:100%;background:none;border:none;color:var(--text3);
+  font-family:var(--font);font-size:12px;cursor:pointer;padding:7px 10px;border-radius:var(--r);transition:color .12s,background .12s;}
+.signout-btn:hover{background:var(--bg3);color:var(--text2);}
+.main{flex:1;overflow-y:auto;background:var(--bg);}
+.view{padding:26px 30px;max-width:980px;}
+.view-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px;gap:12px;flex-wrap:wrap;}
+.view-head-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.view-title{font-size:21px;font-weight:500;color:var(--text);}
+.view-sub{font-size:12px;color:var(--text3);margin-top:3px;}
+.btn-primary{background:var(--accent);color:#fff;border:none;border-radius:var(--r);padding:8px 16px;
+  font-family:var(--font);font-size:13px;font-weight:500;cursor:pointer;transition:opacity .15s;white-space:nowrap;}
+.btn-primary:hover{opacity:.85;}
+.btn-ghost{background:none;color:var(--text2);border:1px solid var(--border2);border-radius:var(--r);padding:8px 16px;
+  font-family:var(--font);font-size:13px;cursor:pointer;transition:background .12s,color .12s;}
+.btn-ghost:hover{background:var(--bg3);color:var(--text);}
+.person-toggle{display:flex;gap:3px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:3px;}
+.person-btn{padding:5px 12px;border-radius:5px;border:none;background:none;color:var(--text2);
+  font-family:var(--font);font-size:12px;font-weight:500;cursor:pointer;transition:background .12s,color .12s;}
+.person-btn.active{background:var(--bg2);color:var(--text);box-shadow:0 1px 3px var(--shadow);}
+.legend{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;}
+.leg{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2);}
+.leg-dot{width:8px;height:8px;border-radius:50%;}
+
+/* SCHEDULE */
+.sched-grid{border:1px solid var(--border);border-radius:var(--rlg);overflow:hidden;box-shadow:0 2px 12px var(--shadow);}
+.sched-head{display:grid;background:var(--bg3);border-bottom:1px solid var(--border);}
+.sh-cell{font-size:11px;font-weight:600;color:var(--text3);padding:8px 12px;text-transform:uppercase;letter-spacing:.05em;}
+.sh-cell+.sh-cell{border-left:1px solid var(--border);}
+.sched-row{display:grid;border-bottom:1px solid var(--border);}
+.sched-row:last-child{border-bottom:none;}
+.sched-row.m5{min-height:34px;} .sched-row.m15{min-height:46px;} .sched-row.m30{min-height:62px;}
+.sched-row.sec-break{border-top:2px solid var(--border2);}
+.t-cell{font-family:var(--mono);font-size:10px;color:var(--text3);padding:0 8px;background:var(--bg3);
+  border-right:1px solid var(--border);display:flex;align-items:center;white-space:nowrap;}
+.b-cell{padding:5px 11px;display:flex;flex-direction:column;justify-content:center;cursor:pointer;
+  background:var(--bg2);transition:background .1s;border-right:1px solid var(--border);position:relative;}
+.b-cell:last-child{border-right:none;}
+.b-cell:hover{background:var(--bg3);}
+.b-cell.empty:hover .empty-hint{opacity:1;}
+.empty-hint{font-size:11px;color:var(--text3);opacity:0;transition:opacity .15s;}
+.cat-bar{position:absolute;left:0;top:0;bottom:0;width:3px;}
+.b-inner{padding-left:9px;}
+.b-pill{display:inline-block;font-size:10px;font-weight:500;padding:1px 7px;border-radius:20px;margin-bottom:2px;}
+.b-title{font-size:12px;font-weight:500;color:var(--text);line-height:1.3;}
+.b-detail{font-size:11px;color:var(--text2);margin-top:1px;line-height:1.3;}
+.c-ops   {--cc:var(--ops);   --cbg:var(--ops-bg);   --ct:var(--ops-t);}
+.c-sales {--cc:var(--sales); --cbg:var(--sales-bg); --ct:var(--sales-t);}
+.c-admin {--cc:var(--admin); --cbg:var(--admin-bg); --ct:var(--admin-t);}
+.c-comms {--cc:var(--comms); --cbg:var(--comms-bg); --ct:var(--comms-t);}
+.c-field {--cc:var(--field); --cbg:var(--field-bg); --ct:var(--field-t);}
+.c-shared{--cc:var(--shared);--cbg:var(--shared-bg);--ct:var(--shared-t);}
+.c-flex  {--cc:var(--flex);  --cbg:var(--flex-bg);  --ct:var(--flex-t);}
+[class*="c-"] .cat-bar{background:var(--cc);}
+[class*="c-"] .b-pill{background:var(--cbg);color:var(--ct);}
+
+/* MESSAGES */
+.msg-wrap{display:flex;flex-direction:column;height:calc(100vh - 155px);border:1px solid var(--border);
+  border-radius:var(--rlg);overflow:hidden;background:var(--bg2);box-shadow:0 2px 12px var(--shadow);}
+.msg-list{flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:10px;}
+.msg-bub{max-width:70%;display:flex;flex-direction:column;gap:3px;}
+.msg-bub.mine{align-self:flex-end;align-items:flex-end;}
+.msg-bub.theirs{align-self:flex-start;align-items:flex-start;}
+.msg-meta{font-size:10px;color:var(--text3);display:flex;align-items:center;gap:6px;}
+.msg-who{font-weight:500;color:var(--text2);}
+.msg-tag{background:var(--ops-bg);color:var(--ops-t);font-size:10px;padding:1px 7px;border-radius:20px;font-weight:500;}
+.msg-text{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:9px 13px;font-size:13px;color:var(--text);line-height:1.5;}
+.msg-bub.mine .msg-text{background:var(--ops-bg);border-color:transparent;}
+.compose{border-top:1px solid var(--border);padding:12px 14px;background:var(--bg2);}
+.compose-tag{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);
+  padding:6px 11px;color:var(--text);font-family:var(--font);font-size:12px;outline:none;margin-bottom:8px;}
+.compose-tag::placeholder{color:var(--text3);}
+.compose-tag:focus{border-color:var(--accent);}
+.compose-row{display:flex;gap:8px;align-items:flex-end;}
+.compose-in{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);
+  padding:9px 13px;color:var(--text);font-family:var(--font);font-size:13px;resize:none;outline:none;min-height:42px;max-height:110px;}
+.compose-in::placeholder{color:var(--text3);}
+.compose-in:focus{border-color:var(--accent);}
+.send-btn{width:40px;height:40px;background:var(--accent);border:none;border-radius:var(--r);
+  color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:opacity .15s;}
+.send-btn:hover{opacity:.82;}
+
+/* MEETINGS */
+.meet-list{display:flex;flex-direction:column;gap:10px;}
+.meet-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rlg);padding:16px 18px;
+  display:flex;align-items:flex-start;justify-content:space-between;gap:14px;box-shadow:0 1px 4px var(--shadow);}
+.meet-card.pm{border-left:3px solid var(--accent);}
+.meet-card.pt{border-left:3px solid var(--comms);}
+.meet-card.acc{border-left:3px solid var(--sales);}
+.meet-card.dec{opacity:.45;}
+.meet-info{flex:1;}
+.meet-title{font-size:15px;font-weight:500;margin-bottom:5px;color:var(--text);}
+.meet-meta{display:flex;flex-wrap:wrap;gap:10px;font-size:12px;color:var(--text2);}
+.meet-notes{font-size:12px;color:var(--text3);margin-top:5px;font-style:italic;}
+.meet-actions{display:flex;flex-direction:column;gap:6px;align-items:flex-end;flex-shrink:0;}
+.ms{font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px;white-space:nowrap;}
+.ms-p{background:var(--ops-bg);color:var(--ops-t);}
+.ms-a{background:var(--sales-bg);color:var(--sales-t);}
+.ms-d{background:var(--flex-bg);color:var(--flex-t);}
+.btn-acc{background:var(--sales-bg);color:var(--sales-t);border:none;border-radius:var(--r);padding:5px 12px;font-family:var(--font);font-size:12px;font-weight:500;cursor:pointer;}
+.btn-dec{background:var(--flex-bg);color:var(--flex-t);border:none;border-radius:var(--r);padding:5px 12px;font-family:var(--font);font-size:12px;font-weight:500;cursor:pointer;}
+
+/* MODALS */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:100;padding:20px;}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--rlg);width:100%;max-width:460px;max-height:90vh;overflow-y:auto;display:flex;flex-direction:column;box-shadow:0 8px 40px var(--shadow);}
+.m-head{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid var(--border);}
+.m-title{font-size:16px;font-weight:500;color:var(--text);}
+.m-close{background:none;border:none;color:var(--text3);cursor:pointer;padding:4px;border-radius:4px;display:flex;align-items:center;transition:color .12s;}
+.m-close:hover{color:var(--text);}
+.m-body{padding:18px 20px;display:flex;flex-direction:column;gap:14px;}
+.m-foot{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-top:1px solid var(--border);gap:8px;}
+.f-row{display:flex;flex-direction:column;gap:5px;}
+.f-row.two{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.f-label{font-size:12px;color:var(--text2);font-weight:500;}
+.f-input,.f-select{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);
+  padding:8px 11px;color:var(--text);font-family:var(--font);font-size:13px;outline:none;width:100%;transition:border-color .12s;}
+.f-input:focus,.f-select:focus{border-color:var(--accent);}
+.f-input::placeholder{color:var(--text3);}
+textarea.f-input{resize:vertical;}
+.cat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;}
+.cat-btn{display:flex;flex-direction:column;align-items:center;gap:4px;padding:7px 3px;border-radius:var(--r);
+  border:1px solid var(--border);background:var(--bg3);cursor:pointer;font-family:var(--font);font-size:10px;color:var(--text2);transition:border-color .12s,background .12s;}
+.cat-btn:hover{background:var(--bg);}
+.cat-btn.active{border-color:var(--cc,var(--border2));background:var(--cbg,var(--bg3));color:var(--ct,var(--text));}
+.cat-sw{width:9px;height:9px;border-radius:50%;}
+.loading{padding:30px;text-align:center;color:var(--text3);font-size:13px;}
+.empty-state{padding:44px 24px;text-align:center;color:var(--text3);}
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
 </style>
 </head>
 <body>
 
-<!-- TOPBAR -->
-<header class="topbar no-print">
-  <div class="topbar-left">
-    <div class="logo-mark">AMP</div>
-    <div class="logo-text">
-      <span class="logo-main">Job Costing</span>
-      <span class="logo-sub">Asphalt Maintenance &amp; Paving Solutions</span>
-    </div>
-  </div>
-  <nav class="topbar-nav">
-    <button class="nav-btn active" onclick="showView('dashboard')">📊 Dashboard</button>
-    <button class="nav-btn" onclick="showView('jobs')">🏗 Jobs</button>
-    <button class="nav-btn" onclick="showView('detail')">📋 Detail</button>
-    <button class="nav-btn" onclick="showView('search')">🔍 Search</button>
-    <button class="nav-btn" onclick="showView('import')">📥 Import</button>
-    <button class="nav-btn" onclick="showView('config')">⚙ Config</button>
-    <button class="nav-btn" onclick="showView('insights')">💡 Insights</button>
-  </nav>
-  <div class="topbar-right">
-    <button class="icon-btn" onclick="toggleTheme()" id="themeBtn" title="Toggle theme">🌙</button>
-    <div class="print-menu-wrap">
-      <button class="icon-btn" onclick="togglePrintMenu()" title="Print/Export">🖨️</button>
-      <div class="print-menu" id="printMenu">
-        <button onclick="doPrint('dashboard')">Print Dashboard</button>
-        <button onclick="doPrint('jobs')">Print Job List</button>
-        <button onclick="doPrint('detail')">Print Job Detail</button>
-        <button onclick="doPrint('search')">Print Search Results</button>
-        <button onclick="doPrint('insights')">Print Insights</button>
-        <hr/>
-        <button onclick="doCSV('jobs')">Download Jobs CSV</button>
-        <button onclick="doCSV('detail')">Download Job Detail CSV</button>
-        <button onclick="doCSV('search')">Download Search Results CSV</button>
+<button class="theme-toggle" id="themeBtn" onclick="toggleTheme()">☀️ Light mode</button>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div style="display:flex;justify-content:center;margin-bottom:12px;">
+      <div class="jt-logo-wrap">
+        <!-- dark mode: white version of logo -->
+        <img class="logo-dark"
+             src="https://www.johnsontractor.com/wp-content/uploads/2022/08/johnson-tractor-white.png"
+             alt="Johnson Tractor"
+             onerror="this.style.display='none';document.getElementById('jt-fallback').style.display='block'"/>
+        <!-- light mode: color version of logo -->
+        <img class="logo-light"
+             src="https://www.johnsontractor.com/wp-content/uploads/2021/07/johnson-tractor-logo.png"
+             alt="Johnson Tractor"
+             onerror="this.style.display='none'"/>
+        <span id="jt-fallback" style="display:none;font-family:var(--mono);font-size:22px;font-weight:600;color:var(--accent);letter-spacing:2px;">JOHNSON TRACTOR</span>
       </div>
     </div>
-    <div class="user-badge" id="userBadge">Connecting…</div>
-  </div>
-</header>
-
-<!-- CONFIRM MODAL -->
-<div class="modal-overlay" id="confirmModal" style="display:none">
-  <div class="modal-box" style="max-width:420px">
-    <div class="modal-header">
-      <h2 id="confirmTitle">Confirm</h2>
-      <p id="confirmMsg" style="white-space:pre-wrap"></p>
-    </div>
-    <div class="modal-actions">
-      <button class="btn-primary" id="confirmOkBtn">Confirm</button>
-      <button class="btn-ghost" onclick="closeConfirm()">Cancel</button>
+    <div class="logo-tagline">Daily Planner · Baldwin, WI</div>
+    <div class="login-card">
+      <p class="login-prompt">Sign in as</p>
+      <div class="login-btns">
+        <button class="login-btn" onclick="login('Mackenzie')">
+          <span class="avatar" style="background:#1E3A5F;color:#93C5FD;">MK</span>Mackenzie
+        </button>
+        <button class="login-btn" onclick="login('Manager')">
+          <span class="avatar" style="background:#7F1D1D;color:#FCA5A5;">MGR</span>Manager
+        </button>
+      </div>
+      <p class="login-hint">Tap your name · changes sync live between you</p>
     </div>
   </div>
 </div>
 
-<!-- JOB MODAL -->
-<div class="modal-overlay" id="jobModal" style="display:none">
-  <div class="modal-box">
-    <div class="modal-header"><h2 id="jobModalTitle">New Job</h2></div>
-    <div class="config-form">
-      <label>Job # <input type="text" id="jm_num" placeholder="26-0057"/></label>
-      <label>Job Name <input type="text" id="jm_name" placeholder="Main Street Overlay"/></label>
-      <label>Client / Location <input type="text" id="jm_client" placeholder="City of Arcadia, WI"/></label>
-      <label>Start Date <input type="date" id="jm_date"/></label>
-      <label>Status
-        <select id="jm_status">
-          <option>Scheduled</option><option>In Progress</option>
-          <option>Complete</option><option>On Hold</option>
-        </select>
-      </label>
-      <label>Notes <input type="text" id="jm_notes" placeholder="Optional…"/></label>
+<!-- APP -->
+<div id="appScreen" class="hidden">
+  <aside class="sidebar">
+    <div class="sb-top">
+      <div class="brand">
+        <div class="brand-logo">
+          <img class="logo-dark"
+               src="https://www.johnsontractor.com/wp-content/uploads/2022/08/johnson-tractor-white.png"
+               alt="Johnson Tractor"
+               onerror="this.style.display='none';document.getElementById('sb-fallback').style.display='block'"/>
+          <img class="logo-light"
+               src="https://www.johnsontractor.com/wp-content/uploads/2021/07/johnson-tractor-logo.png"
+               alt="Johnson Tractor"
+               onerror="this.style.display='none'"/>
+          <span id="sb-fallback" style="display:none;font-family:var(--mono);font-size:11px;font-weight:600;color:var(--accent);">JT</span>
+        </div>
+        <div class="brand-text">
+          <div class="brand-name">Daily Planner · Baldwin, WI</div>
+        </div>
+      </div>
+      <div class="user-pill" id="userPill"></div>
     </div>
-    <div class="modal-actions">
-      <button class="btn-primary" onclick="saveJobMeta()">Save</button>
-      <button class="btn-ghost" onclick="closeJobModal()">Cancel</button>
-      <button class="btn-danger" id="deleteJobBtn" onclick="deleteJob()" style="display:none">Delete Job</button>
+    <nav class="sb-nav">
+      <button class="nav-btn active" onclick="switchView('schedule',this)">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Schedule
+      </button>
+      <button class="nav-btn" onclick="switchView('messages',this)">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Messages <span class="badge hidden" id="msgBadge"></span>
+      </button>
+      <button class="nav-btn" onclick="switchView('meetings',this)">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Meetings <span class="badge hidden" id="meetBadge"></span>
+      </button>
+    </nav>
+    <div class="sb-days">
+      <div class="sb-days-label">Day</div>
+      <div id="dayBtns"></div>
+    </div>
+    <div class="sb-bottom">
+      <button class="signout-btn" onclick="signOut()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Sign out
+      </button>
+    </div>
+  </aside>
+  <main class="main">
+    <div id="vSchedule" class="view">
+      <div class="view-head">
+        <div><h1 class="view-title" id="schedTitle">Monday — Schedule</h1><p class="view-sub">Live sync · edits appear instantly for both users</p></div>
+        <div class="view-head-right">
+          <div class="person-toggle" id="personToggle"></div>
+          <button class="btn-primary" onclick="openAddModal(null,0)">+ Add block</button>
+        </div>
+      </div>
+      <div class="legend" id="legend"></div>
+      <div class="sched-grid" id="schedGrid"><div class="loading">Connecting…</div></div>
+    </div>
+    <div id="vMessages" class="view hidden">
+      <div class="view-head"><div><h1 class="view-title">Quick notes &amp; updates</h1><p class="view-sub">Tag a job or unit · syncs live</p></div></div>
+      <div class="msg-wrap">
+        <div class="msg-list" id="msgList"><div class="loading">Loading…</div></div>
+        <div class="compose">
+          <input class="compose-tag" id="msgTag" placeholder="Job / unit / equipment tag (optional)"/>
+          <div class="compose-row">
+            <textarea class="compose-in" id="msgIn" placeholder="Type a note…" rows="1"></textarea>
+            <button class="send-btn" onclick="sendMsg()">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="vMeetings" class="view hidden">
+      <div class="view-head">
+        <div><h1 class="view-title">Meeting invites</h1><p class="view-sub">Send · accept · decline · synced live</p></div>
+        <button class="btn-primary" onclick="openMeetModal()">+ New invite</button>
+      </div>
+      <div class="meet-list" id="meetList"><div class="loading">Loading…</div></div>
+    </div>
+  </main>
+</div>
+
+<!-- BLOCK MODAL -->
+<div class="overlay hidden" id="blockOverlay" onclick="if(event.target===this)closeBlockModal()">
+  <div class="modal">
+    <div class="m-head"><span class="m-title" id="bModalTitle">Add block</span><button class="m-close" onclick="closeBlockModal()">✕</button></div>
+    <div class="m-body">
+      <div class="f-row"><label class="f-label">Person</label><div class="person-toggle" id="modalPersonToggle"></div></div>
+      <div class="f-row two">
+        <div><label class="f-label">Start</label><select class="f-select" id="bStart"></select></div>
+        <div><label class="f-label">End</label><select class="f-select" id="bEnd"></select></div>
+      </div>
+      <div class="f-row"><label class="f-label">Block title</label><input class="f-input" id="bTitle" placeholder="e.g. Equipment check-in"/></div>
+      <div class="f-row"><label class="f-label">Detail (optional)</label><input class="f-input" id="bDetail" placeholder="e.g. Inspect incoming units, log serial numbers"/></div>
+      <div class="f-row"><label class="f-label">Category / color</label><div class="cat-grid" id="catGrid"></div></div>
+    </div>
+    <div class="m-foot">
+      <button class="btn-ghost hidden" id="bDelete" style="color:#F87171;" onclick="deleteBlock()">Delete block</button>
+      <div style="display:flex;gap:8px;"><button class="btn-ghost" onclick="closeBlockModal()">Cancel</button><button class="btn-primary" onclick="saveBlock()">Save block</button></div>
     </div>
   </div>
 </div>
 
-<!-- CFG ITEM MODAL -->
-<div class="modal-overlay" id="cfgModal" style="display:none">
-  <div class="modal-box">
-    <div class="modal-header"><h2 id="cfgModalTitle">Add Item</h2></div>
-    <div class="config-form" id="cfgModalForm"></div>
-    <div class="modal-actions">
-      <button class="btn-primary" onclick="saveCfgItem()">Save</button>
-      <button class="btn-ghost" onclick="closeCfgModal()">Cancel</button>
+<!-- MEETING MODAL -->
+<div class="overlay hidden" id="meetOverlay" onclick="if(event.target===this)closeMeetModal()">
+  <div class="modal">
+    <div class="m-head"><span class="m-title">New meeting invite</span><button class="m-close" onclick="closeMeetModal()">✕</button></div>
+    <div class="m-body">
+      <div class="f-row"><label class="f-label">Title</label><input class="f-input" id="mTitle" placeholder="e.g. Weekly team check-in"/></div>
+      <div class="f-row two">
+        <div><label class="f-label">Date</label><input class="f-input" type="date" id="mDate"/></div>
+        <div><label class="f-label">Time</label><input class="f-input" type="time" id="mTime"/></div>
+      </div>
+      <div class="f-row"><label class="f-label">Location</label><input class="f-input" id="mLoc" placeholder="Showroom, shop, or video link"/></div>
+      <div class="f-row"><label class="f-label">Notes</label><textarea class="f-input" id="mNotes" rows="3" placeholder="Agenda or context…"></textarea></div>
     </div>
+    <div class="m-foot"><button class="btn-ghost" onclick="closeMeetModal()">Cancel</button><button class="btn-primary" onclick="saveMeeting()">Send invite</button></div>
   </div>
 </div>
 
-<!-- TOAST -->
-<div id="toast" class="toast"></div>
-
-<!-- ═══ DASHBOARD ═══ -->
-<main class="view active" id="view-dashboard">
-  <div class="view-header print-header">
-    <h1>Estimating Accuracy Dashboard</h1>
-    <span class="view-sub" id="dashJobCount"></span>
-  </div>
-  <div class="kpi-strip">
-    <div class="kpi-card kpi-blue"><div class="kpi-label">Total Est. Cost</div><div class="kpi-value" id="kpi_est">$0</div></div>
-    <div class="kpi-card kpi-green"><div class="kpi-label">Total Act. Cost</div><div class="kpi-value" id="kpi_act">$0</div></div>
-    <div class="kpi-card kpi-amber" id="kpi_varCard"><div class="kpi-label">Total Variance</div><div class="kpi-value" id="kpi_var">—</div></div>
-    <div class="kpi-card kpi-purple" id="kpi_varPctCard"><div class="kpi-label">Overall Var %</div><div class="kpi-value" id="kpi_varPct">—</div></div>
-    <div class="kpi-card kpi-dark"><div class="kpi-label">Total Jobs</div><div class="kpi-value" id="kpi_jobs">0</div></div>
-  </div>
-  <div class="section-card">
-    <div class="section-title">Service-Level Accuracy — All Jobs Combined</div>
-    <div class="table-scroll">
-      <table class="data-table">
-        <thead><tr>
-          <th class="col-svc">Service</th>
-          <th>Est Hrs</th><th>Act Hrs</th><th>Hr Var</th><th>Hr Var%</th>
-          <th>Est Labor $</th><th>Act Labor $</th><th>Labor Var</th>
-          <th>Est Matl $</th><th>Act Matl $</th><th>Matl Var</th>
-          <th>Est Equip $</th><th>Act Equip $</th><th>Equip Var</th>
-          <th>Est Total</th><th>Act Total</th><th>Total Var</th><th>Var%</th>
-        </tr></thead>
-        <tbody id="dashBody"></tbody>
-        <tfoot id="dashFoot"></tfoot>
-      </table>
-    </div>
-  </div>
-</main>
-
-<!-- ═══ JOBS ═══ -->
-<main class="view" id="view-jobs">
-  <div class="view-header print-header">
-    <h1>Job List</h1>
-    <div class="view-actions no-print">
-      <button class="btn-primary" onclick="openNewJob()">+ New Job</button>
-    </div>
-  </div>
-  <div class="filter-bar no-print">
-    <div class="filter-group"><label class="filter-label">🔍 Search</label>
-      <input type="text" id="jl_q" class="filter-input" placeholder="Job #, name, client…" oninput="filterJobs()"/></div>
-    <div class="filter-group"><label class="filter-label">Status</label>
-      <select id="jl_status" class="filter-select" onchange="filterJobs()">
-        <option value="">All</option><option>Scheduled</option><option>In Progress</option><option>Complete</option><option>On Hold</option>
-      </select></div>
-    <div class="filter-group"><label class="filter-label">From</label>
-      <input type="date" id="jl_from" class="filter-input" onchange="filterJobs()"/></div>
-    <div class="filter-group"><label class="filter-label">To</label>
-      <input type="date" id="jl_to" class="filter-input" onchange="filterJobs()"/></div>
-    <div class="filter-group"><label class="filter-label">Service Used</label>
-      <select id="jl_svc" class="filter-select" onchange="filterJobs()"><option value="">Any</option></select></div>
-    <div class="filter-group filter-group-btn">
-      <button class="btn-ghost btn-sm" onclick="clearJobFilters()">✕ Clear</button>
-      <span class="filter-count" id="jl_count"></span>
-    </div>
-  </div>
-  <div class="bulk-bar no-print" id="bulkBar" style="display:none">
-    <span class="bulk-bar-count" id="bulkCount">0 selected</span>
-    <button class="btn-danger btn-sm" onclick="bulkDelete()">🗑 Delete Selected</button>
-    <button class="btn-ghost btn-sm" onclick="clearSelection()">✕ Clear</button>
-  </div>
-  <div class="section-card">
-    <div class="table-scroll">
-      <table class="data-table">
-        <thead><tr>
-          <th class="no-print" style="width:34px"><input type="checkbox" id="cbAll" onclick="toggleAll(this)"/></th>
-          <th>Job #</th><th>Job Name</th><th>Client</th><th>Date</th>
-          <th>Est Hrs</th><th>Act Hrs</th><th>Est Cost</th><th>Act Cost</th>
-          <th>Var $</th><th>Var %</th><th>Status</th><th class="no-print">Actions</th>
-        </tr></thead>
-        <tbody id="jobsBody"></tbody>
-        <tfoot id="jobsFoot"></tfoot>
-      </table>
-    </div>
-  </div>
-</main>
-
-<!-- ═══ DETAIL ═══ -->
-<main class="view" id="view-detail">
-  <div class="view-header print-header">
-    <div class="detail-header-left">
-      <h1>Job Cost Detail</h1>
-      <div class="job-selector no-print">
-        <select id="jobSel" onchange="loadDetail()"><option value="">— Select a Job —</option></select>
-      </div>
-    </div>
-    <div class="view-actions no-print" id="detailActions" style="display:none">
-      <button class="btn-ghost" onclick="clearDetail()">Clear</button>
-      <button class="btn-primary" onclick="saveDetail()">💾 Save</button>
-    </div>
-  </div>
-  <div class="job-info-bar" id="jobInfoBar" style="display:none">
-    <span id="iNum"></span><span id="iName"></span><span id="iClient"></span>
-    <span id="iDate"></span><span id="iStatus" class="status-badge"></span>
-  </div>
-  <div class="kpi-strip small" id="detailKpis" style="display:none">
-    <div class="kpi-card kpi-blue"><div class="kpi-label">Est Hours</div><div class="kpi-value" id="dk_eh">—</div></div>
-    <div class="kpi-card kpi-green"><div class="kpi-label">Act Hours</div><div class="kpi-value" id="dk_ah">—</div></div>
-    <div class="kpi-card kpi-blue"><div class="kpi-label">Est Cost</div><div class="kpi-value" id="dk_ec">—</div></div>
-    <div class="kpi-card kpi-green"><div class="kpi-label">Act Cost</div><div class="kpi-value" id="dk_ac">—</div></div>
-    <div class="kpi-card kpi-amber"><div class="kpi-label">Variance $</div><div class="kpi-value" id="dk_v">—</div></div>
-    <div class="kpi-card kpi-purple"><div class="kpi-label">Var %</div><div class="kpi-value" id="dk_vp">—</div></div>
-  </div>
-  <div id="detailPlaceholder" class="placeholder-msg">
-    <div class="placeholder-icon">📋</div>
-    <p>Select a job above or <a href="#" onclick="openNewJob()">create a new job</a>.</p>
-  </div>
-  <div id="detailContent" style="display:none"></div>
-</main>
-
-<!-- ═══ SEARCH ═══ -->
-<main class="view" id="view-search">
-  <div class="view-header print-header">
-    <h1>Search &amp; Filter Jobs</h1>
-    <span class="view-sub" id="srchCount"></span>
-  </div>
-  <div class="search-panel no-print">
-    <div class="search-panel-title">🔍 Search Filters</div>
-    <div class="search-grid">
-      <div class="search-field">
-        <label>Free-Text</label>
-        <input type="text" id="s_q" class="filter-input" style="width:100%" placeholder="Job #, name, client, notes, equipment…" oninput="doSearch()"/>
-        <div class="field-hint">Searches all fields and all phase notes</div>
-      </div>
-      <div class="search-field">
-        <label>Service Type</label>
-        <select id="s_svc" class="filter-select" style="width:100%" onchange="doSearch()"><option value="">Any Service</option></select>
-        <div class="field-hint">Jobs that used this service</div>
-      </div>
-      <div class="search-field">
-        <label>Equipment / Keyword in Notes</label>
-        <input type="text" id="s_equip" class="filter-input" style="width:100%" placeholder="e.g. Kobelco, backhoe, roller…" oninput="doSearch()"/>
-        <div class="field-hint">Searches phase notes for equipment</div>
-      </div>
-      <div class="search-field">
-        <label>Laborer / Crew</label>
-        <input type="text" id="s_labor" class="filter-input" style="width:100%" placeholder="e.g. James Yauch…" oninput="doSearch()"/>
-      </div>
-      <div class="search-field">
-        <label>Status</label>
-        <select id="s_status" class="filter-select" style="width:100%" onchange="doSearch()">
-          <option value="">All</option><option>Scheduled</option><option>In Progress</option><option>Complete</option><option>On Hold</option>
-        </select>
-      </div>
-      <div class="search-field">
-        <label>Date From</label>
-        <input type="date" id="s_from" class="filter-input" style="width:100%" onchange="doSearch()"/>
-      </div>
-      <div class="search-field">
-        <label>Date To</label>
-        <input type="date" id="s_to" class="filter-input" style="width:100%" onchange="doSearch()"/>
-      </div>
-      <div class="search-field">
-        <label>Variance Direction</label>
-        <select id="s_vdir" class="filter-select" style="width:100%" onchange="doSearch()">
-          <option value="">Any</option>
-          <option value="over">Over Budget</option>
-          <option value="under">Under Budget</option>
-          <option value="on">On Budget (±5%)</option>
-        </select>
-        <div class="field-hint">Filter by budget performance</div>
-      </div>
-      <div class="search-field">
-        <label>Min Cost $</label>
-        <input type="number" id="s_min" class="filter-input" style="width:100%" placeholder="0" oninput="doSearch()"/>
-      </div>
-      <div class="search-field">
-        <label>Max Cost $</label>
-        <input type="number" id="s_max" class="filter-input" style="width:100%" placeholder="no limit" oninput="doSearch()"/>
-      </div>
-    </div>
-    <div class="search-panel-footer">
-      <button class="btn-primary" onclick="doSearch()">🔍 Search</button>
-      <button class="btn-ghost" onclick="clearSearch()">✕ Clear</button>
-      <span class="filter-count" id="srchCount2"></span>
-    </div>
-  </div>
-  <div id="srchMatchCard" style="display:none" class="section-card">
-    <div class="section-title" id="srchMatchTitle">Matched Services</div>
-    <div id="srchMatchBody" style="padding:12px 16px"></div>
-  </div>
-  <div class="section-card">
-    <div class="section-title">Search Results</div>
-    <div class="table-scroll">
-      <table class="data-table">
-        <thead><tr>
-          <th>Job #</th><th>Job Name</th><th>Client</th><th>Date</th>
-          <th>Services</th><th>Matched Notes</th>
-          <th>Est Cost</th><th>Act Cost</th><th>Var $</th><th>Var %</th><th>Status</th>
-          <th class="no-print">Open</th>
-        </tr></thead>
-        <tbody id="srchBody"></tbody>
-        <tfoot id="srchFoot"></tfoot>
-      </table>
-    </div>
-  </div>
-</main>
-
-<!-- ═══ IMPORT ═══ -->
-<main class="view" id="view-import">
-  <div class="view-header">
-    <h1>Import CSV</h1>
-    <span class="view-sub">Import from your estimating software</span>
-  </div>
-  <div class="section-card" id="impStep1">
-    <div class="section-title">Step 1 — Upload CSV File</div>
-    <div class="drop-zone" id="dropZone"
-         ondragover="event.preventDefault();this.classList.add('over')"
-         ondragleave="this.classList.remove('over')"
-         ondrop="handleDrop(event)">
-      <div class="drop-icon">📄</div>
-      <p>Drag &amp; drop your CSV here, or</p>
-      <label class="btn-primary" style="cursor:pointer;display:inline-block;margin-top:8px">
-        Browse <input type="file" accept=".csv" id="csvFile" style="display:none" onchange="handleFile(event)"/>
-      </label>
-      <p class="drop-hint">Supports AMP estimating software CSV exports</p>
-    </div>
-    <div id="fileInfo" style="display:none" class="file-info">
-      <span id="fileName"></span><span id="fileRows"></span>
-      <button class="btn-ghost btn-sm" onclick="resetImport()">✕ Remove</button>
-    </div>
-  </div>
-  <div class="section-card" id="impStep2" style="display:none">
-    <div class="section-title">Step 2 — Map Columns</div>
-    <p class="import-hint">Confirm or adjust how your CSV columns map to AMP fields.</p>
-    <div class="map-grid" id="colMapGrid"></div>
-    <div class="auto-badge" id="autoBadge" style="display:none">✅ AMP format detected — columns auto-mapped.</div>
-    <div style="padding:16px;border-top:1px solid var(--border)">
-      <button class="btn-primary" onclick="toStep(3)">Preview Service Mapping →</button>
-    </div>
-  </div>
-  <div class="section-card" id="impStep3" style="display:none">
-    <div class="section-title">Step 3 — Map Service Names</div>
-    <p class="import-hint">Match your CSV service names to AMP service types. Sub-phases become separate phases of the same service.</p>
-    <div class="map-grid" id="svcMapGrid"></div>
-    <div style="padding:16px;border-top:1px solid var(--border)">
-      <button class="btn-primary" onclick="toStep(4)">Preview Data →</button>
-      <button class="btn-ghost" style="margin-left:8px" onclick="toStep(2)">← Back</button>
-    </div>
-  </div>
-  <div class="section-card" id="impStep4" style="display:none">
-    <div class="section-title">Step 4 — Review &amp; Confirm</div>
-    <div id="impPreview"></div>
-    <div style="padding:16px;border-top:1px solid var(--border)">
-      <button class="btn-primary" onclick="confirmImport()">✅ Import into Firebase</button>
-      <button class="btn-ghost" style="margin-left:8px" onclick="toStep(3)">← Back</button>
-    </div>
-  </div>
-  <div class="section-card" id="impHistory">
-    <div class="section-title">📜 Import History
-      <button class="btn-ghost btn-sm" style="float:right;margin-top:-2px" onclick="loadHistory()">↻ Refresh</button>
-    </div>
-    <p style="padding:8px 16px 0;font-size:12px;color:var(--text2)">Each import is logged here. Use Undo to delete an entire import batch.</p>
-    <div class="table-scroll">
-      <table class="data-table">
-        <thead><tr>
-          <th>Date / Time</th><th>File</th><th>Jobs</th><th>Job Numbers</th><th>Actions</th>
-        </tr></thead>
-        <tbody id="historyBody"></tbody>
-      </table>
-    </div>
-  </div>
-</main>
-
-<!-- ═══ CONFIG ═══ -->
-<main class="view" id="view-config">
-  <div class="view-header">
-    <h1>Configuration</h1>
-    <span class="view-sub">Rates, equipment, labor, materials — all editable with confirmation</span>
-  </div>
-  <div class="cfg-tabs no-print">
-    <button class="cfg-tab active" onclick="showCfg('labor')">👷 Labor</button>
-    <button class="cfg-tab" onclick="showCfg('equipment')">🚜 Equipment</button>
-    <button class="cfg-tab" onclick="showCfg('egroups')">📦 Equip Groups</button>
-    <button class="cfg-tab" onclick="showCfg('materials')">🪨 Materials</button>
-    <button class="cfg-tab" onclick="showCfg('services')">🛠 Services</button>
-    <button class="cfg-tab" onclick="showCfg('phases')">🔢 Phases</button>
-  </div>
-  <div class="cfg-panel active" id="cfgPanel-labor">
-    <div class="section-card">
-      <div class="section-title">Labor Rates
-        <button class="btn-primary btn-sm" style="float:right;margin-top:-2px" onclick="addCfg('labor')">+ Add</button>
-      </div>
-      <div class="table-scroll">
-        <table class="data-table">
-          <thead><tr><th style="text-align:left">Name</th><th>Rate ($/hr)</th><th>Role</th><th>Active</th><th class="no-print">Actions</th></tr></thead>
-          <tbody id="cfg_labor"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-  <div class="cfg-panel" id="cfgPanel-equipment">
-    <div class="section-card">
-      <div class="section-title">Equipment Rates
-        <button class="btn-primary btn-sm" style="float:right;margin-top:-2px" onclick="addCfg('equipment')">+ Add</button>
-      </div>
-      <div class="table-scroll">
-        <table class="data-table">
-          <thead><tr><th style="text-align:left">Name</th><th>Rate ($/hr)</th><th>Group</th><th>Active</th><th class="no-print">Actions</th></tr></thead>
-          <tbody id="cfg_equipment"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-  <div class="cfg-panel" id="cfgPanel-egroups">
-    <div class="section-card">
-      <div class="section-title">Equipment Groups
-        <button class="btn-primary btn-sm" style="float:right;margin-top:-2px" onclick="addCfg('egroups')">+ Add</button>
-      </div>
-      <p style="padding:8px 16px;font-size:12px;color:var(--text2)">Organize equipment into categories for Insights reporting.</p>
-      <div class="table-scroll">
-        <table class="data-table">
-          <thead><tr><th style="text-align:left">Group Name</th><th style="text-align:left">Description</th><th class="no-print">Actions</th></tr></thead>
-          <tbody id="cfg_egroups"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-  <div class="cfg-panel" id="cfgPanel-materials">
-    <div class="section-card">
-      <div class="section-title">Materials
-        <button class="btn-primary btn-sm" style="float:right;margin-top:-2px" onclick="addCfg('materials')">+ Add</button>
-      </div>
-      <div class="table-scroll">
-        <table class="data-table">
-          <thead><tr><th style="text-align:left">Name</th><th>Unit</th><th>Rate</th><th>Category</th><th>Active</th><th class="no-print">Actions</th></tr></thead>
-          <tbody id="cfg_materials"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-  <div class="cfg-panel" id="cfgPanel-services">
-    <div class="section-card">
-      <div class="section-title">Service Types
-        <button class="btn-primary btn-sm" style="float:right;margin-top:-2px" onclick="addCfg('services')">+ Add</button>
-      </div>
-      <p style="padding:8px 16px;font-size:12px;color:var(--text2)">These appear in Job Detail. Deactivate to hide without deleting.</p>
-      <div class="table-scroll">
-        <table class="data-table">
-          <thead><tr><th>#</th><th style="text-align:left">Service Name</th><th>Active</th><th class="no-print">Actions</th></tr></thead>
-          <tbody id="cfg_services"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-  <div class="cfg-panel" id="cfgPanel-phases">
-    <div class="section-card">
-      <div class="section-title">Phase Count &amp; Labels</div>
-      <div style="padding:16px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
-        <label style="font-weight:600;font-size:13px">Phases per Service:
-          <input type="number" id="phaseCount" min="1" max="10" value="5"
-            style="width:70px;margin-left:8px;padding:6px 10px;border:1px solid var(--border2);border-radius:6px;font-size:14px;background:var(--surface2);color:var(--text)"/>
-        </label>
-        <button class="btn-primary" onclick="savePhaseCount()">Save</button>
-      </div>
-      <div style="padding:0 16px 16px">
-        <p style="font-size:12px;color:var(--text2);margin-bottom:8px">Custom phase labels (optional — leave blank for "Phase 1", "Phase 2", etc.):</p>
-        <div id="phaseLbls" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px"></div>
-        <button class="btn-ghost btn-sm" style="margin-top:12px" onclick="savePhaseLabels()">Save Labels</button>
-      </div>
-    </div>
-  </div>
-</main>
-
-<!-- ═══ INSIGHTS ═══ -->
-<main class="view" id="view-insights">
-  <div class="view-header print-header">
-    <h1>Insights &amp; Profitability</h1>
-    <span class="view-sub">Recommendations to improve estimating accuracy and profit margins</span>
-  </div>
-  <div class="targets-bar no-print">
-    <span class="targets-lbl">🎯 Profit Targets:</span>
-    <div class="targets-wrap"><span>Overall Margin Goal</span>
-      <input type="number" id="tgt_overall" class="tgt-input" min="0" max="100" value="20" oninput="renderInsights()"/>
-      <span>%</span></div>
-    <div class="targets-wrap"><span>Flag jobs over</span>
-      <input type="number" id="tgt_flag" class="tgt-input" min="0" max="100" value="10" oninput="renderInsights()"/>
-      <span>% over budget</span></div>
-    <button class="btn-primary btn-sm" onclick="saveTargets()">Save Targets</button>
-  </div>
-  <div class="kpi-strip">
-    <div class="kpi-card kpi-blue"><div class="kpi-label">Most Profitable Service</div><div class="kpi-value" id="ins_best" style="font-size:14px;line-height:1.2">—</div></div>
-    <div class="kpi-card kpi-green"><div class="kpi-label">Avg Estimate Accuracy</div><div class="kpi-value" id="ins_acc">—</div></div>
-    <div class="kpi-card kpi-amber" id="ins_worstCard"><div class="kpi-label">Biggest Problem Service</div><div class="kpi-value" id="ins_worst" style="font-size:14px;line-height:1.2">—</div></div>
-    <div class="kpi-card kpi-purple"><div class="kpi-label">Jobs Hitting Target</div><div class="kpi-value" id="ins_ontgt">—</div></div>
-    <div class="kpi-card kpi-dark"><div class="kpi-label">Revenue Recovered<br><span style="font-size:9px;opacity:.7">if estimates fixed</span></div><div class="kpi-value" id="ins_rcvr">—</div></div>
-  </div>
-  <div class="section-card">
-    <div class="section-title">📋 Recommendations — What to Fix</div>
-    <div id="insightRecs" style="padding:16px"></div>
-  </div>
-  <div class="section-card">
-    <div class="section-title">🎯 Service Profitability Targets &amp; Accuracy</div>
-    <div class="table-scroll">
-      <table class="data-table">
-        <thead><tr>
-          <th class="col-svc">Service</th><th>Jobs</th><th>Avg Est $</th><th>Avg Act $</th>
-          <th>Avg Var%</th><th>Trend</th><th>Labor Var%</th><th>Matl Var%</th><th>Equip Var%</th>
-          <th>Target %</th><th>Act Margin%</th><th>Gap</th><th>Adjustment</th><th>Health</th>
-        </tr></thead>
-        <tbody id="insSvcBody"></tbody>
-      </table>
-    </div>
-  </div>
-  <div class="section-card">
-    <div class="section-title">🏆 Job Profitability Ranking</div>
-    <div class="table-scroll">
-      <table class="data-table">
-        <thead><tr>
-          <th>Rank</th><th>Job #</th><th>Job Name</th><th>Est Cost</th><th>Act Cost</th>
-          <th>Var $</th><th>Var%</th><th>vs Target</th><th>Primary Issue</th><th>Status</th>
-        </tr></thead>
-        <tbody id="insJobBody"></tbody>
-      </table>
-    </div>
-  </div>
-  <div class="section-card">
-    <div class="section-title">🚜 Equipment — Per Machine Accuracy</div>
-    <p style="padding:8px 16px 0;font-size:12px;color:var(--text2)">Populated from equipment names in phase notes and CSV imports.</p>
-    <div class="table-scroll">
-      <table class="data-table">
-        <thead><tr>
-          <th style="text-align:left">Equipment</th><th>Group</th><th>Jobs</th>
-          <th>Est Hrs</th><th>Act Hrs</th><th>Hr Var</th><th>Hr Var%</th>
-          <th>Est Cost</th><th>Act Cost</th><th>Cost Var</th><th>Avg Overrun/Job</th><th>Verdict</th>
-        </tr></thead>
-        <tbody id="insEquipBody"></tbody>
-      </table>
-    </div>
-  </div>
-  <div class="section-card">
-    <div class="section-title">👷 Employee / Crew Productivity</div>
-    <p style="padding:8px 16px 0;font-size:12px;color:var(--text2)">From Crew/Laborers field in Job Detail phases and CSV imports.</p>
-    <div class="table-scroll">
-      <table class="data-table">
-        <thead><tr>
-          <th style="text-align:left">Name</th><th>Jobs</th><th>Services</th>
-          <th>Est Hrs</th><th>Act Hrs</th><th>Hr Var</th><th>Avg/Job</th><th>Hr Var%</th>
-          <th>Est Labor $</th><th>Act Labor $</th><th>Labor Var $</th><th>Rating</th>
-        </tr></thead>
-        <tbody id="insEmpBody"></tbody>
-      </table>
-    </div>
-  </div>
-  <div class="section-card">
-    <div class="section-title">📅 Seasonal Trends</div>
-    <div id="insSeasonContent" style="padding:16px"></div>
-  </div>
-  <div class="section-card">
-    <div class="section-title">🔍 Cost Category Deep Dive</div>
-    <div id="insDive" style="padding:16px"></div>
-  </div>
-</main>
-
-</body>
-</html>
 <script type="module">
-// ════════════════════════════════════════════════════════════════════════
-// ★★★  YOUR FIREBASE CONFIG — ALREADY SET  ★★★
-// ════════════════════════════════════════════════════════════════════════
-import { initializeApp }   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, doc, setDoc, getDocs, deleteDoc, getDoc }
-  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, set, push, remove, update, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-const FB = {
-  apiKey:            "AIzaSyCWMloVUAwu2O9YNPPCF1ytkXWq1T_FHTE",
-  authDomain:        "amp-job-costing.firebaseapp.com",
-  projectId:         "amp-job-costing",
-  storageBucket:     "amp-job-costing.firebasestorage.app",
-  messagingSenderId: "195136393604",
-  appId:             "1:195136393604:web:403be4360ed0f3cc754dd1",
+/* ╔════════════════════════════════════════════╗
+   ║  JOHNSON TRACTOR — PASTE FIREBASE CONFIG  ║
+   ╚════════════════════════════════════════════╝ */
+const firebaseConfig = {
+  apiKey:            "YOUR_API_KEY",
+  authDomain:        "YOUR_PROJECT_ID.firebaseapp.com",
+  databaseURL:       "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
+  projectId:         "YOUR_PROJECT_ID",
+  storageBucket:     "YOUR_PROJECT_ID.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId:             "YOUR_APP_ID"
 };
-// ════════════════════════════════════════════════════════════════════════
+/* ════════════════════════════════════════════ */
 
-const fbApp = initializeApp(FB);
-const db    = getFirestore(fbApp);
-
-// ── Default services ─────────────────────────────────────────────────────
-const DEFAULT_SVCS = [
-  "1st Lift Binder Paving","2nd Lift Surface Paving","3\" Pave",
-  "Spray Patch Repair","Infrared Repair","Full Depth Patch","Mill and Patch",
-  "Concrete Flatwork","Excavation","Gravel Placement","Removal of Asphalt",
-  "Removal of Concrete","Fine Grading","Hot Crack Sealing","Pulverize and Fine Grade",
-  "Sealcoating Driveway","Sealcoating Parking Lot 1 Coat","Sealcoating Parking Lot 2 Coat",
-  "Sealcoat Squeegee/Brush Applied","Sealcoat/Crackfill Together",
-  "Striping","Surface Prep","Miscellaneous",
-];
-
-const DEFAULT_CFG = {
-  phaseCount:5, phaseLabels:{}, svcTargets:{},
-  insightTargets:{overall:20,flag:10},
-  services: DEFAULT_SVCS.map((s,i)=>({id:"s"+i,name:s,active:true})),
-  labor:[
-    {id:"l1",name:"Operator",rate:85,role:"Operator",active:true},
-    {id:"l2",name:"Laborer",rate:55,role:"Laborer",active:true},
-    {id:"l3",name:"Foreman",rate:95,role:"Foreman",active:true},
-    {id:"l4",name:"Driver / CDL",rate:72,role:"Driver",active:true},
-    {id:"l5",name:"LABOR CREW MEMBER",rate:55,role:"Laborer",active:true},
+const app=initializeApp(firebaseConfig);
+const db=getDatabase(app);
+const DAYS=["Mon","Tue","Wed","Thu","Fri","Sat"];
+const CATS={
+  ops:   {label:"Operations", color:"#D4251C"},
+  sales: {label:"Sales",      color:"#4A8FE8"},
+  admin: {label:"Admin",      color:"#D97706"},
+  comms: {label:"Comms",      color:"#8B7FE8"},
+  field: {label:"Shop/lot",   color:"#E07C2A"},
+  shared:{label:"Shared/sync",color:"#6B7280"},
+  flex:  {label:"Flex/lunch", color:"#4B5563"},
+};
+function makeSlots(){
+  const s=[];const fmt=(h,m)=>`${h}:${m===0?"00":m<10?"0"+m:m}`;
+  const add=(h,m,n)=>{const t=h*60+m+n;return[Math.floor(t/60),t%60];};
+  let h=8,m=0;
+  [[3,5],[7,15],[14,30]].forEach(([count,mins],gi)=>{
+    for(let i=0;i<count;i++){s.push({label:`${fmt(h,m)}–${fmt(...add(h,m,mins))}`,mins,secBreak:i===0&&gi>0});[h,m]=add(h,m,mins);}
+  });return s;
+}
+const SLOTS=makeSlots();
+const TIME_OPTS=[];
+for(let h=8;h<=17;h++)for(let m=0;m<60;m+=5){if(h===17&&m>0)break;TIME_OPTS.push({label:`${h}:${m===0?"00":m<10?"0"+m:m}`,val:h*60+m});}
+const DEFAULTS={
+  Mackenzie:[
+    null,
+    {title:"Check voicemails + emails",detail:"Overnight customer messages, urgent items",cat:"admin"},
+    {title:"Check today's schedule",detail:"Confirm appointments, deliveries, pickups",cat:"ops"},
+    {title:"Morning huddle",detail:"Daily priorities with manager",cat:"shared"},
+    {title:"Morning huddle cont'd",detail:"Open items, staffing, floor coverage",cat:"shared"},
+    {title:"Open + floor prep",detail:"Open registers, prep showroom, unlock lot",cat:"ops"},
+    {title:"Customer follow-ups",detail:"Pending quotes, financing, service status",cat:"comms"},
+    {title:"Parts + service coordination",detail:"Check parts orders, service bay schedule",cat:"ops"},
+    {title:"Flex — urgent items",detail:"",cat:"flex"},
+    {title:"Customer floor time",detail:"Walk-ins, equipment demos, quote requests",cat:"sales"},
+    {title:"Customer floor time cont'd",detail:"",cat:"sales"},
+    {title:"Admin block",detail:"Invoicing, filing, warranty paperwork",cat:"admin"},
+    {title:"Lunch",detail:"",cat:"flex"},
+    {title:"Lunch",detail:"",cat:"flex"},
+    {title:"Afternoon floor coverage",detail:"Customer appointments, test drives",cat:"sales"},
+    {title:"Afternoon floor coverage cont'd",detail:"",cat:"sales"},
+    {title:"Vendor + supplier calls",detail:"Parts status, delivery ETAs, pricing",cat:"comms"},
+    {title:"End-of-day ops",detail:"Close out tickets, lot check, secure facility",cat:"ops"},
+    {title:"Tomorrow's prep",detail:"Pull scheduled jobs, confirm appointments",cat:"ops"},
+    {title:"Close-of-day sync",detail:"Hand-off notes to manager",cat:"shared"},
+    null,null,null,null,
   ],
-  egroups:[
-    {id:"eg1",name:"Trucks",desc:"Dump trucks, Western Stars"},
-    {id:"eg2",name:"Pavers",desc:"Asphalt paving machines"},
-    {id:"eg3",name:"Rollers",desc:"Steel drum and rubber rollers"},
-    {id:"eg4",name:"Excavators",desc:"Excavators, skid steers, graders"},
-    {id:"eg5",name:"Trailers",desc:"Tilt deck, tandem, tri-axle trailers"},
-    {id:"eg6",name:"Small Tools",desc:"Plate compactors, hand tools"},
-    {id:"eg7",name:"Patchers",desc:"Durapatcher, infrared equipment"},
-  ],
-  equipment:[
-    {id:"e1",name:"P-2020 LeeBoy 8515E PAVER",rate:350,group:"Pavers",active:true},
-    {id:"e2",name:"P-2024 B155 BEUTHLING ROLLER",rate:180,group:"Rollers",active:true},
-    {id:"e3",name:"P-WACKER RD12 ROLLER",rate:160,group:"Rollers",active:true},
-    {id:"e4",name:"PREP-2018 HAMM ROLLER",rate:180,group:"Rollers",active:true},
-    {id:"e5",name:"PREP-2022 CASE LEVEL BEST GRADER",rate:280,group:"Excavators",active:true},
-    {id:"e6",name:"PREP-CASE SKID LOADER",rate:130,group:"Excavators",active:true},
-    {id:"e7",name:"X-2017 KOBELCO SK140 EXCAVATOR",rate:225,group:"Excavators",active:true},
-    {id:"e8",name:"X-EXTRA SKIDDY",rate:130,group:"Excavators",active:true},
-    {id:"e9",name:"T-2000 STERLING TRI-AXLE",rate:145,group:"Trucks",active:true},
-    {id:"e10",name:"T-2022 SILVER WESTERN STAR",rate:145,group:"Trucks",active:true},
-    {id:"e11",name:"T-2023 BLUE WESTERN",rate:145,group:"Trucks",active:true},
-    {id:"e12",name:"T-2024 INT'L MV607 TAN TRUCK",rate:145,group:"Trucks",active:true},
-    {id:"e13",name:"T-2026 GREEN WESTERN STAR",rate:145,group:"Trucks",active:true},
-    {id:"e14",name:"T-2025 TEAL WESTERN STAR",rate:145,group:"Trucks",active:true},
-    {id:"e15",name:"TR-2012 MIDSOTA TILT DECK",rate:95,group:"Trailers",active:true},
-    {id:"e16",name:"TR-2022 T-30 TOWMASTER TANDEM",rate:95,group:"Trailers",active:true},
-    {id:"e17",name:"TR-2026 BENKE 50 TON TRI AXLE",rate:95,group:"Trailers",active:true},
-    {id:"e18",name:"A-2020 DURAPATCHER",rate:400,group:"Patchers",active:true},
-    {id:"e19",name:"PREP-PLATE COMPACTOR",rate:55,group:"Small Tools",active:true},
-    {id:"e20",name:"X-PLATE COMPACTOR",rate:55,group:"Small Tools",active:true},
-    {id:"e21",name:"PM-STIHL BACK PACK BLOWERS",rate:15,group:"Small Tools",active:true},
-    {id:"e22",name:"X-SKID PICKUP BROOM",rate:30,group:"Small Tools",active:true},
-    {id:"e23",name:"X-DUMP",rate:145,group:"Trucks",active:true},
-  ],
-  materials:[
-    {id:"m1",name:"Asphalt Binder 4LT 58-28S",unit:"ton",rate:90,category:"Asphalt",active:true},
-    {id:"m2",name:"Asphalt Driveway Mix (WI)",unit:"ton",rate:95,category:"Asphalt",active:true},
-    {id:"m3",name:"CRS2 Tack Coat",unit:"gal",rate:3.20,category:"Asphalt",active:true},
-    {id:"m4",name:"1-1/4\" Gravel",unit:"ton",rate:18,category:"Aggregate",active:true},
-    {id:"m5",name:"Filter Cloth (Woven)",unit:"SY",rate:1.85,category:"Aggregate",active:true},
-    {id:"m6",name:"Hot Crack Seal",unit:"lb",rate:1.10,category:"Sealers",active:true},
-    {id:"m7",name:"Sealer",unit:"gal",rate:4.50,category:"Sealers",active:true},
-    {id:"m8",name:"Concrete Disposal",unit:"ton",rate:28,category:"Removal",active:true},
-  ],
+  Manager:[
+    null,
+    {title:"Check overnight messages",detail:"Sales leads, service escalations",cat:"admin"},
+    {title:"Review daily KPIs",detail:"Sales pipeline, service bay utilization",cat:"ops"},
+    {title:"Morning huddle",detail:"Daily priorities with Mackenzie",cat:"shared"},
+    {title:"Morning huddle cont'd",detail:"Staffing, floor plan, promotions",cat:"shared"},
+    {title:"Inventory walk",detail:"Lot check, new arrivals, unit condition",cat:"field"},
+    {title:"Sales team check-in",detail:"Pipeline review, customer follow-up status",cat:"sales"},
+    {title:"Dealer + manufacturer comms",detail:"Allocation, incentives, program updates",cat:"comms"},
+    {title:"Flex — urgent items",detail:"",cat:"flex"},
+    {title:"Deals + F&I review",detail:"Pending contracts, financing approvals",cat:"sales"},
+    {title:"Deals + F&I cont'd",detail:"",cat:"sales"},
+    {title:"Operations review",detail:"Service bay, parts dept, technician updates",cat:"ops"},
+    {title:"Lunch",detail:"",cat:"flex"},
+    {title:"Lunch",detail:"",cat:"flex"},
+    {title:"Customer meetings",detail:"High-value prospects, fleet accounts",cat:"sales"},
+    {title:"Customer meetings cont'd",detail:"",cat:"sales"},
+    {title:"Reporting + admin",detail:"Daily sales report, expense review",cat:"admin"},
+    {title:"End-of-day ops",detail:"Confirm close procedures, security",cat:"ops"},
+    {title:"Tomorrow's planning",detail:"Staffing, promotions, delivery schedule",cat:"ops"},
+    {title:"Close-of-day sync",detail:"Hand-off notes from Mackenzie",cat:"shared"},
+    null,null,null,null,
+  ]
 };
-
-// ── State ────────────────────────────────────────────────────────────────
-let jobs    = {};
-let cfg     = JSON.parse(JSON.stringify(DEFAULT_CFG));
-let curJob  = null;
-let curView = "dashboard";
-let selJobs = new Set();
-let impRows = [], impHdrs = [], impColMap = {}, impSvcMap = {};
-let impFile = "";
-let cfgEditType = null, cfgEditIdx = null;
-let editJobId = null;
-
-// ── Helpers ──────────────────────────────────────────────────────────────
-const ge  = id => document.getElementById(id);
-const esc = s  => String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
-const num = v  => { const n=parseFloat(String(v||"").replace(/[^0-9.\-]/g,"")); return isNaN(n)?0:n; };
-const fD  = n  => { if(Math.abs(n)<0.005)return"—"; return(n<0?"(":"")+"$"+Math.abs(n).toLocaleString("en-US",{minimumFractionDigits:0,maximumFractionDigits:0})+(n<0?")":""); };
-const fP  = n  => Math.abs(n)<0.0001?"—":(n*100).toFixed(1)+"%";
-const f1  = n  => n===0?"—":n.toFixed(1);
-const vC  = v  => v>0.005?"var-over":v<-0.005?"var-under":"var-zero";
-const uid = () => "id_"+Date.now()+"_"+Math.random().toString(36).slice(2,6);
-const pKey= (s,p) => s.replace(/[^a-zA-Z0-9]/g,"_")+"_p"+p;
-const PC  = () => parseInt(cfg.phaseCount)||5;
-const PL  = p  => (cfg.phaseLabels||{})[p]||("Phase "+p);
-const SVCS= () => (cfg.services||[]).filter(s=>s.active!==false).map(s=>s.name);
-
-function sortedJobs() {
-  return Object.entries(jobs).sort((a,b)=>
-    (a[1].meta?.jobNum||"").localeCompare(b[1].meta?.jobNum||"",undefined,{numeric:true}));
-}
-
-function jobTotals(data) {
-  let eH=0,aH=0,eL=0,aL=0,eM=0,aM=0,eE=0,aE=0;
-  Object.values(data.phases||{}).forEach(ph=>{
-    eH+=num(ph.estHrs); aH+=num(ph.actHrs);
-    eL+=num(ph.estLabor); aL+=num(ph.actLabor);
-    eM+=num(ph.estMatl);  aM+=num(ph.actMatl);
-    eE+=num(ph.estEquip); aE+=num(ph.actEquip);
-  });
-  return {eH,aH,eL,aL,eM,aM,eE,aE,estCost:eL+eM+eE,actCost:aL+aM+aE};
-}
-
-function jobUsesSvc(data,svc) {
-  for(let p=1;p<=PC()+5;p++){
-    const ph=(data.phases||{})[pKey(svc,p)]||{};
-    if(num(ph.estHrs)||num(ph.actHrs)||num(ph.estLabor)||num(ph.actLabor)||
-       num(ph.estMatl)||num(ph.actMatl)||num(ph.estEquip)||num(ph.actEquip)||ph.notes)return true;
-  }
-  return false;
-}
-
-function toast(msg,type) {
-  const t=ge("toast");
-  t.textContent=msg;
-  t.className="toast show"+(type==="err"?" err":type==="ok"?" ok":"");
-  clearTimeout(t._t);
-  t._t=setTimeout(()=>{t.className="toast";},3500);
-}
-
-function confirm2(title,msg,onOk) {
-  ge("confirmTitle").textContent=title;
-  ge("confirmMsg").textContent=msg;
-  ge("confirmModal").style.display="flex";
-  ge("confirmOkBtn").onclick=()=>{closeConfirm();onOk();};
-}
-window.closeConfirm=()=>ge("confirmModal").style.display="none";
-
-// ── Firebase load ─────────────────────────────────────────────────────────
-async function loadAll() {
-  ge("userBadge").textContent=FB.projectId;
-  try {
-    const [jSnap,cSnap]=await Promise.all([
-      getDocs(collection(db,"jobs")),
-      getDocs(collection(db,"config")),
-    ]);
-    jobs={};
-    jSnap.forEach(d=>{jobs[d.id]=d.data();});
-    cSnap.forEach(d=>{if(d.id==="appConfig")cfg={...DEFAULT_CFG,...d.data()};});
-    renderAll();
-    toast("Connected ✓","ok");
-  } catch(e){
-    toast("Firebase error: "+e.message,"err");
-    renderAll();
-  }
-}
-
-async function saveCfgDB() {
-  try{ await setDoc(doc(db,"config","appConfig"),cfg); return true; }
-  catch(e){ toast("Save error: "+e.message,"err"); return false; }
-}
-
-// ── Render everything ─────────────────────────────────────────────────────
-function renderAll() {
-  fillSvcDropdowns();
-  renderDash();
-  renderJobs();
-  fillJobSel();
-  renderCfgAll();
-  if(curJob) renderDetail(curJob);
-  if(curView==="search") doSearch();
-  if(curView==="insights") renderInsights();
-  if(curView==="import") loadHistory();
-}
-
-function fillSvcDropdowns() {
-  const svcs=SVCS();
-  ["jl_svc","s_svc"].forEach(id=>{
-    const el=ge(id); if(!el)return;
-    const prev=el.value;
-    el.innerHTML='<option value="">Any Service</option>';
-    svcs.forEach(s=>{const o=document.createElement("option");o.value=s;o.textContent=s;el.appendChild(o);});
-    if(prev)el.value=prev;
-  });
-}
-
-// ── DASHBOARD ────────────────────────────────────────────────────────────
-function renderDash() {
-  const arr=Object.values(jobs);
-  ge("dashJobCount").textContent=arr.length+" job"+(arr.length!==1?"s":"");
-  ge("kpi_jobs").textContent=arr.length;
-  const sT={};
-  SVCS().forEach(s=>{sT[s]={eH:0,aH:0,eL:0,aL:0,eM:0,aM:0,eE:0,aE:0};});
-  let gEst=0,gAct=0;
-  arr.forEach(data=>{
-    const ph=data.phases||{};
-    SVCS().forEach(svc=>{
-      const st=sT[svc];
-      for(let p=1;p<=PC()+5;p++){
-        const x=ph[pKey(svc,p)]||{};
-        st.eH+=num(x.estHrs); st.aH+=num(x.actHrs);
-        st.eL+=num(x.estLabor); st.aL+=num(x.actLabor);
-        st.eM+=num(x.estMatl);  st.aM+=num(x.actMatl);
-        st.eE+=num(x.estEquip); st.aE+=num(x.actEquip);
-      }
-    });
-    const t=jobTotals(data); gEst+=t.estCost; gAct+=t.actCost;
-  });
-  const tv=gAct-gEst,tvp=gEst?tv/gEst:0;
-  ge("kpi_est").textContent=fD(gEst);
-  ge("kpi_act").textContent=fD(gAct);
-  ge("kpi_var").textContent=fD(tv);
-  ge("kpi_varPct").textContent=fP(tvp);
-  ge("kpi_varCard").className="kpi-card kpi-amber"+(tv>0.005?" over":tv<-0.005?" under":"");
-  ge("kpi_varPctCard").className="kpi-card kpi-purple"+(tv>0.005?" over":tv<-0.005?" under":"");
-  const tbody=ge("dashBody"),tfoot=ge("dashFoot");
-  tbody.innerHTML="";
-  let g={eH:0,aH:0,eL:0,aL:0,eM:0,aM:0,eE:0,aE:0};
-  SVCS().forEach(svc=>{
-    const s=sT[svc];
-    Object.keys(g).forEach(k=>g[k]+=s[k]);
-    const hrV=s.aH-s.eH,lV=s.aL-s.eL,mV=s.aM-s.eM,eV=s.aE-s.eE;
-    const estT=s.eL+s.eM+s.eE,actT=s.aL+s.aM+s.aE,tV=actT-estT;
-    const tr=document.createElement("tr");
-    tr.innerHTML=`<td class="col-svc">${esc(svc)}</td>
-      <td>${f1(s.eH)}</td><td>${f1(s.aH)}</td>
-      <td class="${vC(hrV)}">${f1(hrV)}</td><td class="${vC(hrV)}">${fP(s.eH?hrV/s.eH:0)}</td>
-      <td>${fD(s.eL)}</td><td>${fD(s.aL)}</td><td class="${vC(lV)}">${fD(lV)}</td>
-      <td>${fD(s.eM)}</td><td>${fD(s.aM)}</td><td class="${vC(mV)}">${fD(mV)}</td>
-      <td>${fD(s.eE)}</td><td>${fD(s.aE)}</td><td class="${vC(eV)}">${fD(eV)}</td>
-      <td>${fD(estT)}</td><td>${fD(actT)}</td>
-      <td class="${vC(tV)}">${fD(tV)}</td><td class="${vC(tV)}">${fP(estT?tV/estT:0)}</td>`;
-    tbody.appendChild(tr);
-  });
-  const gET=g.eL+g.eM+g.eE,gAT=g.aL+g.aM+g.aE;
-  const ghV=g.aH-g.eH,glV=g.aL-g.eL,gmV=g.aM-g.eM,geV=g.aE-g.eE,gTV=gAT-gET;
-  tfoot.innerHTML=`<tr><td>GRAND TOTAL</td>
-    <td>${f1(g.eH)}</td><td>${f1(g.aH)}</td>
-    <td class="${vC(ghV)}">${f1(ghV)}</td><td class="${vC(ghV)}">${fP(g.eH?ghV/g.eH:0)}</td>
-    <td>${fD(g.eL)}</td><td>${fD(g.aL)}</td><td class="${vC(glV)}">${fD(glV)}</td>
-    <td>${fD(g.eM)}</td><td>${fD(g.aM)}</td><td class="${vC(gmV)}">${fD(gmV)}</td>
-    <td>${fD(g.eE)}</td><td>${fD(g.aE)}</td><td class="${vC(geV)}">${fD(geV)}</td>
-    <td>${fD(gET)}</td><td>${fD(gAT)}</td>
-    <td class="${vC(gTV)}">${fD(gTV)}</td><td class="${vC(gTV)}">${fP(gET?gTV/gET:0)}</td></tr>`;
-}
-
-// ── JOB LIST ─────────────────────────────────────────────────────────────
-function renderJobs(filtered) {
-  const tbody=ge("jobsBody"),tfoot=ge("jobsFoot");
-  tbody.innerHTML=""; selJobs.clear(); updateBulkBar();
-  const arr=filtered!==undefined?filtered:sortedJobs();
-  if(!arr.length){
-    tbody.innerHTML='<tr><td colspan="13" class="no-results">No jobs match filters.</td></tr>';
-    tfoot.innerHTML=""; ge("jl_count").textContent="0 jobs"; return;
-  }
-  let tEH=0,tAH=0,tEC=0,tAC=0;
-  arr.forEach(([id,data])=>{
-    const m=data.meta||{},t=jobTotals(data);
-    tEH+=t.eH; tAH+=t.aH; tEC+=t.estCost; tAC+=t.actCost;
-    const vD=t.actCost-t.estCost,vP=t.estCost?vD/t.estCost:0;
-    const sc="status-"+(m.status||"Scheduled").replace(/\s+/g,"-");
-    const tr=document.createElement("tr");
-    tr.dataset.jobid=id;
-    tr.innerHTML=`
-      <td class="center no-print"><input type="checkbox" class="job-cb" data-id="${esc(id)}" onchange="toggleJobSel('${esc(id)}',this)"/></td>
-      <td>${esc(m.jobNum||"")}</td>
-      <td style="text-align:left">${esc(m.name||"")}</td>
-      <td style="text-align:left">${esc(m.client||"")}</td>
-      <td class="center">${esc(m.date||"")}</td>
-      <td>${f1(t.eH)}</td><td>${f1(t.aH)}</td>
-      <td>${fD(t.estCost)}</td><td>${fD(t.actCost)}</td>
-      <td class="${vC(vD)}">${fD(vD)}</td>
-      <td class="${vC(vP)}">${fP(vP)}</td>
-      <td class="center"><span class="status-badge ${sc}">${esc(m.status||"Scheduled")}</span></td>
-      <td class="center no-print">
-        <button class="btn-edit btn-sm" onclick="openEditJob('${esc(id)}')">✏</button>
-        <button class="btn-edit btn-sm" style="background:var(--amber);color:#000;margin-left:3px" onclick="goToDetail('${esc(id)}')">Detail</button>
-      </td>`;
-    tbody.appendChild(tr);
-  });
-  const tV=tAC-tEC,tVP=tEC?tV/tEC:0;
-  tfoot.innerHTML=`<tr><td class="no-print"></td><td colspan="3">TOTALS (${arr.length})</td>
-    <td class="center"></td><td>${f1(tEH)}</td><td>${f1(tAH)}</td>
-    <td>${fD(tEC)}</td><td>${fD(tAC)}</td>
-    <td class="${vC(tV)}">${fD(tV)}</td><td class="${vC(tVP)}">${fP(tVP)}</td>
-    <td colspan="2"></td></tr>`;
-  ge("jl_count").textContent=arr.length+" job"+(arr.length!==1?"s":"");
-}
-
-window.filterJobs=function(){
-  const q=(ge("jl_q").value||"").toLowerCase().trim();
-  const st=ge("jl_status").value,df=ge("jl_from").value,dt=ge("jl_to").value,sv=ge("jl_svc").value;
-  const res=sortedJobs().filter(([id,data])=>{
-    const m=data.meta||{};
-    if(q){
-      const hay=[m.jobNum,m.name,m.client,m.notes,m.date].join(" ").toLowerCase();
-      const pn=Object.values(data.phases||{}).map(p=>p.notes||"").join(" ").toLowerCase();
-      if(!hay.includes(q)&&!pn.includes(q))return false;
-    }
-    if(st&&m.status!==st)return false;
-    if(df&&m.date&&m.date<df)return false;
-    if(dt&&m.date&&m.date>dt)return false;
-    if(sv&&!jobUsesSvc(data,sv))return false;
-    return true;
-  });
-  renderJobs(res);
-};
-window.clearJobFilters=function(){
-  ["jl_q","jl_from","jl_to"].forEach(i=>ge(i).value="");
-  ["jl_status","jl_svc"].forEach(i=>ge(i).value="");
-  renderJobs(); ge("jl_count").textContent="";
-};
-
-// ── Bulk select ───────────────────────────────────────────────────────────
-window.toggleJobSel=function(id,cb){
-  if(cb.checked){selJobs.add(id);cb.closest("tr").classList.add("row-selected");}
-  else{selJobs.delete(id);cb.closest("tr").classList.remove("row-selected");}
-  updateBulkBar();
-};
-window.toggleAll=function(master){
-  document.querySelectorAll("#jobsBody .job-cb").forEach(cb=>{
-    const id=cb.dataset.id; if(!id)return;
-    cb.checked=master.checked;
-    if(master.checked){selJobs.add(id);cb.closest("tr").classList.add("row-selected");}
-    else{selJobs.delete(id);cb.closest("tr").classList.remove("row-selected");}
-  });
-  updateBulkBar();
-};
-function updateBulkBar(){
-  const n=selJobs.size;
-  ge("bulkBar").style.display=n>0?"flex":"none";
-  ge("bulkCount").textContent=n+" job"+(n!==1?"s":"")+" selected";
-}
-window.clearSelection=function(){
-  selJobs.clear();
-  document.querySelectorAll("#jobsBody .job-cb").forEach(cb=>{cb.checked=false;cb.closest("tr")?.classList.remove("row-selected");});
-  const ca=ge("cbAll"); if(ca)ca.checked=false;
-  updateBulkBar();
-};
-window.bulkDelete=function(){
-  const n=selJobs.size; if(!n)return;
-  const nums=[...selJobs].map(id=>jobs[id]?.meta?.jobNum||id).slice(0,10).join(", ");
-  confirm2("Delete "+n+" Job"+(n!==1?"s":""),
-    "Permanently delete "+n+" job"+(n!==1?"s":"")+" and ALL phase data?\n\nJobs: "+nums+(selJobs.size>10?" …":"")+" \n\nThis CANNOT be undone.",
-    async()=>{
-      for(const id of [...selJobs]){
-        try{await deleteDoc(doc(db,"jobs",id));}catch(e){}
-        delete jobs[id];
-        if(curJob===id){curJob=null;showDetailEmpty();}
-      }
-      selJobs.clear(); renderAll(); toast("Deleted ✓","ok");
-    });
-};
-
-// ── JOB MODAL ─────────────────────────────────────────────────────────────
-window.openNewJob=function(){
-  editJobId=null;
-  ge("jobModalTitle").textContent="New Job";
-  ["jm_num","jm_name","jm_client","jm_notes"].forEach(i=>ge(i).value="");
-  ge("jm_date").value=""; ge("jm_status").value="Scheduled";
-  ge("deleteJobBtn").style.display="none";
-  ge("jobModal").style.display="flex";
-};
-window.openEditJob=function(id){
-  editJobId=id; const m=jobs[id]?.meta||{};
-  ge("jobModalTitle").textContent="Edit Job";
-  ge("jm_num").value=m.jobNum||""; ge("jm_name").value=m.name||"";
-  ge("jm_client").value=m.client||""; ge("jm_date").value=m.date||"";
-  ge("jm_status").value=m.status||"Scheduled"; ge("jm_notes").value=m.notes||"";
-  ge("deleteJobBtn").style.display="inline-flex";
-  ge("jobModal").style.display="flex";
-};
-window.closeJobModal=()=>ge("jobModal").style.display="none";
-window.saveJobMeta=async function(){
-  const num2=ge("jm_num").value.trim(),name=ge("jm_name").value.trim();
-  if(!num2){toast("Job # required","err");return;}
-  if(!name){toast("Job Name required","err");return;}
-  const meta={jobNum:num2,name,client:ge("jm_client").value.trim(),
-    date:ge("jm_date").value,status:ge("jm_status").value,notes:ge("jm_notes").value.trim()};
-  const id=editJobId||("job_"+num2.replace(/[^a-zA-Z0-9]/g,"_")+"_"+Date.now());
-  if(!jobs[id])jobs[id]={meta:{},phases:{}};
-  jobs[id].meta=meta;
-  try{await setDoc(doc(db,"jobs",id),jobs[id],{merge:true});}
-  catch(e){toast("Save error: "+e.message,"err");return;}
-  closeJobModal(); renderAll();
-  if(!editJobId){curJob=id;ge("jobSel").value=id;showView("detail");renderDetail(id);}
-  toast(editJobId?"Updated ✓":"Job created ✓","ok");
-};
-window.deleteJob=function(){
-  if(!editJobId)return;
-  confirm2("Delete Job","Delete this job and ALL phase data? Cannot be undone.",
-    async()=>{
-      try{await deleteDoc(doc(db,"jobs",editJobId));}catch(e){toast("Error: "+e.message,"err");return;}
-      delete jobs[editJobId];
-      if(curJob===editJobId){curJob=null;showDetailEmpty();}
-      closeJobModal(); renderAll(); toast("Deleted ✓","ok");
-    });
-};
-
-// ── JOB DETAIL ────────────────────────────────────────────────────────────
-function fillJobSel(){
-  const sel=ge("jobSel"),prev=sel.value;
-  sel.innerHTML='<option value="">— Select a Job —</option>';
-  sortedJobs().forEach(([id,data])=>{
-    const o=document.createElement("option");
-    o.value=id; const m=data.meta||{};
-    o.textContent=(m.jobNum||id)+" — "+(m.name||"Untitled");
-    sel.appendChild(o);
-  });
-  if(prev&&jobs[prev])sel.value=prev;
-}
-window.loadDetail=function(){
-  const id=ge("jobSel").value;
-  if(!id){curJob=null;showDetailEmpty();return;}
-  curJob=id; renderDetail(id);
-};
-function goToDetail(id){curJob=id;ge("jobSel").value=id;showView("detail");renderDetail(id);}
-window.goToDetail=goToDetail;
-
-function showDetailEmpty(){
-  ge("jobSel").value="";
-  ge("detailPlaceholder").style.display="";
-  ge("detailContent").style.display="none";
-  ge("detailActions").style.display="none";
-  ge("detailKpis").style.display="none";
-  ge("jobInfoBar").style.display="none";
-}
-
-function renderDetail(id){
-  const data=jobs[id]||{},m=data.meta||{},phases=data.phases||{};
-  ge("detailPlaceholder").style.display="none";
-  ge("detailContent").style.display="";
-  ge("detailActions").style.display="flex";
-  ge("detailKpis").style.display="grid";
-  ge("jobInfoBar").style.display="flex";
-  ge("iNum").textContent="Job #: "+(m.jobNum||"—");
-  ge("iName").textContent=m.name||"";
-  ge("iClient").textContent=m.client||"";
-  ge("iDate").textContent=m.date||"";
-  const sb=ge("iStatus");
-  sb.textContent=m.status||"Scheduled";
-  sb.className="status-badge status-"+(m.status||"Scheduled").replace(/\s+/g,"-");
-  const container=ge("detailContent");
-  container.innerHTML="";
-  SVCS().forEach(svc=>{
-    const sec=document.createElement("div");
-    sec.className="section-card";
-    sec.style.cssText="border-bottom:2px solid var(--border2)";
-    sec.innerHTML=`<div style="font-family:var(--font-head);font-size:13px;font-weight:700;text-transform:uppercase;padding:7px 16px;background:var(--navy2);color:#fff;letter-spacing:.5px">${esc(svc)}</div>`;
-    const wrap=document.createElement("div");
-    wrap.className="table-scroll";
-    const tbl=document.createElement("table");
-    tbl.className="data-table";
-    tbl.innerHTML=`<thead><tr>
-      <th class="no-print" style="width:28px"></th>
-      <th style="min-width:60px">Phase</th>
-      <th style="min-width:150px;text-align:left">Notes / Equipment</th>
-      <th style="min-width:110px;text-align:left">Crew / Laborers</th>
-      <th>Est Hrs</th><th>Act Hrs</th><th>Hr Var</th>
-      <th>Est Labor</th><th>Act Labor</th><th>Labor Var</th>
-      <th>Est Matl</th><th>Act Matl</th><th>Matl Var</th>
-      <th>Est Equip</th><th>Act Equip</th><th>Equip Var</th>
-      <th>Est Total</th><th>Act Total</th><th>Total Var</th><th>Var%</th>
-    </tr></thead>`;
-    const tbody=document.createElement("tbody");
-    let sEH=0,sAH=0,sEL=0,sAL=0,sEM=0,sAM=0,sEE=0,sAE=0;
-    for(let p=1;p<=PC();p++){
-      const k=pKey(svc,p),ph=phases[k]||{};
-      sEH+=num(ph.estHrs); sAH+=num(ph.actHrs);
-      sEL+=num(ph.estLabor); sAL+=num(ph.actLabor);
-      sEM+=num(ph.estMatl);  sAM+=num(ph.actMatl);
-      sEE+=num(ph.estEquip); sAE+=num(ph.actEquip);
-      const hrV=num(ph.actHrs)-num(ph.estHrs);
-      const lV=num(ph.actLabor)-num(ph.estLabor);
-      const mV=num(ph.actMatl)-num(ph.estMatl);
-      const eV=num(ph.actEquip)-num(ph.estEquip);
-      const estT=num(ph.estLabor)+num(ph.estMatl)+num(ph.estEquip);
-      const actT=num(ph.actLabor)+num(ph.actMatl)+num(ph.actEquip);
-      const tV=actT-estT;
-      const eSvc=esc(svc).replace(/'/g,"&#39;");
-      const tr=document.createElement("tr");
-      tr.className="phase-row"; tr.dataset.svc=svc; tr.dataset.ph=p;
-      tr.innerHTML=`
-        <td class="center no-print"><button class="phase-del" title="Clear phase" onclick="clearPhase('${eSvc}',${p})">✕</button></td>
-        <td class="center phase-lbl">${esc(PL(p))}</td>
-        <td><input class="cell-input wide" data-f="notes" data-s="${eSvc}" data-p="${p}" value="${esc(ph.notes||"")}" placeholder="equipment, notes…"/></td>
-        <td><input class="cell-input wide" data-f="laborers" data-s="${eSvc}" data-p="${p}" value="${esc(ph.laborers||"")}" placeholder="crew members…"/></td>
-        <td><input class="cell-input" data-f="estHrs" data-s="${eSvc}" data-p="${p}" value="${ph.estHrs||""}" placeholder="0"/></td>
-        <td><input class="cell-input" data-f="actHrs" data-s="${eSvc}" data-p="${p}" value="${ph.actHrs||""}" placeholder="0"/></td>
-        <td class="${vC(hrV)}" data-c="hrV" data-s="${eSvc}" data-p="${p}">${hrV===0?"—":f1(hrV)}</td>
-        <td><input class="cell-input" data-f="estLabor" data-s="${eSvc}" data-p="${p}" value="${ph.estLabor||""}" placeholder="0"/></td>
-        <td><input class="cell-input" data-f="actLabor" data-s="${eSvc}" data-p="${p}" value="${ph.actLabor||""}" placeholder="0"/></td>
-        <td class="${vC(lV)}" data-c="lV" data-s="${eSvc}" data-p="${p}">${fD(lV)}</td>
-        <td><input class="cell-input" data-f="estMatl" data-s="${eSvc}" data-p="${p}" value="${ph.estMatl||""}" placeholder="0"/></td>
-        <td><input class="cell-input" data-f="actMatl" data-s="${eSvc}" data-p="${p}" value="${ph.actMatl||""}" placeholder="0"/></td>
-        <td class="${vC(mV)}" data-c="mV" data-s="${eSvc}" data-p="${p}">${fD(mV)}</td>
-        <td><input class="cell-input" data-f="estEquip" data-s="${eSvc}" data-p="${p}" value="${ph.estEquip||""}" placeholder="0"/></td>
-        <td><input class="cell-input" data-f="actEquip" data-s="${eSvc}" data-p="${p}" value="${ph.actEquip||""}" placeholder="0"/></td>
-        <td class="${vC(eV)}" data-c="eV" data-s="${eSvc}" data-p="${p}">${fD(eV)}</td>
-        <td data-c="estT" data-s="${eSvc}" data-p="${p}">${fD(estT)}</td>
-        <td data-c="actT" data-s="${eSvc}" data-p="${p}">${fD(actT)}</td>
-        <td class="${vC(tV)}" data-c="tV" data-s="${eSvc}" data-p="${p}">${fD(tV)}</td>
-        <td class="${vC(tV)}" data-c="tVP" data-s="${eSvc}" data-p="${p}">${fP(estT?tV/estT:0)}</td>`;
-      tbody.appendChild(tr);
-    }
-    // Subtotal
-    const shV=sAH-sEH,slV=sAL-sEL,smV=sAM-sEM,seV=sAE-sEE;
-    const sET=sEL+sEM+sEE,sAT=sAL+sAM+sAE,stV=sAT-sET;
-    const subTr=document.createElement("tr");
-    subTr.className="subtotal-row"; subTr.dataset.sub=svc;
-    subTr.innerHTML=`<td class="no-print"></td><td colspan="3">↳ ${esc(svc)} — SUBTOTAL</td>
-      <td>${f1(sEH)}</td><td>${f1(sAH)}</td><td class="${vC(shV)}">${f1(shV)}</td>
-      <td>${fD(sEL)}</td><td>${fD(sAL)}</td><td class="${vC(slV)}">${fD(slV)}</td>
-      <td>${fD(sEM)}</td><td>${fD(sAM)}</td><td class="${vC(smV)}">${fD(smV)}</td>
-      <td>${fD(sEE)}</td><td>${fD(sAE)}</td><td class="${vC(seV)}">${fD(seV)}</td>
-      <td>${fD(sET)}</td><td>${fD(sAT)}</td>
-      <td class="${vC(stV)}">${fD(stV)}</td><td class="${vC(stV)}">${fP(sET?stV/sET:0)}</td>`;
-    tbody.appendChild(subTr);
-    tbl.appendChild(tbody); wrap.appendChild(tbl); sec.appendChild(wrap);
-    container.appendChild(sec);
-  });
-  container.querySelectorAll(".cell-input").forEach(inp=>inp.addEventListener("input",onInput));
-  updateDetailKpis(id);
-}
-
-function onInput(e){
-  const inp=e.target,s=inp.dataset.s,p=inp.dataset.p;
-  const gv=f=>{const el=document.querySelector(`.cell-input[data-f="${f}"][data-s="${s}"][data-p="${p}"]`);return el?num(el.value):0;};
-  const eH=gv("estHrs"),aH=gv("actHrs"),eL=gv("estLabor"),aL=gv("actLabor");
-  const eM=gv("estMatl"),aM=gv("actMatl"),eE=gv("estEquip"),aE=gv("actEquip");
-  const hrV=aH-eH,lV=aL-eL,mV=aM-eM,eV=aE-eE;
-  const estT=eL+eM+eE,actT=aL+aM+aE,tV=actT-estT;
-  const sc=(calc,val,fmt)=>{
-    const el=document.querySelector(`[data-c="${calc}"][data-s="${s}"][data-p="${p}"]`);
-    if(!el)return;
-    el.textContent=fmt==="h"?f1(val):calc==="tVP"?fP(estT?val/estT:0):fD(val);
-    el.className=vC(val);
-  };
-  sc("hrV",hrV,"h"); sc("lV",lV,"$"); sc("mV",mV,"$"); sc("eV",eV,"$");
-  sc("estT",estT,"$"); sc("actT",actT,"$"); sc("tV",tV,"$"); sc("tVP",tV,"pct");
-  recalcSub(s);
-  updateDetailKpisDOM();
-}
-
-function recalcSub(svc){
-  let sEH=0,sAH=0,sEL=0,sAL=0,sEM=0,sAM=0,sEE=0,sAE=0;
-  for(let p=1;p<=PC();p++){
-    const gv=f=>{const el=document.querySelector(`.cell-input[data-f="${f}"][data-s="${svc}"][data-p="${p}"]`);return el?num(el.value):0;};
-    sEH+=gv("estHrs"); sAH+=gv("actHrs"); sEL+=gv("estLabor"); sAL+=gv("actLabor");
-    sEM+=gv("estMatl"); sAM+=gv("actMatl"); sEE+=gv("estEquip"); sAE+=gv("actEquip");
-  }
-  const shV=sAH-sEH,slV=sAL-sEL,smV=sAM-sEM,seV=sAE-sEE;
-  const sET=sEL+sEM+sEE,sAT=sAL+sAM+sAE,stV=sAT-sET;
-  const row=document.querySelector(`[data-sub="${svc}"]`); if(!row)return;
-  const cells=row.querySelectorAll("td");
-  const vals=[f1(sEH),f1(sAH),`<span class="${vC(shV)}">${f1(shV)}</span>`,
-    fD(sEL),fD(sAL),`<span class="${vC(slV)}">${fD(slV)}</span>`,
-    fD(sEM),fD(sAM),`<span class="${vC(smV)}">${fD(smV)}</span>`,
-    fD(sEE),fD(sAE),`<span class="${vC(seV)}">${fD(seV)}</span>`,
-    fD(sET),fD(sAT),`<span class="${vC(stV)}">${fD(stV)}</span>`,
-    `<span class="${vC(stV)}">${fP(sET?stV/sET:0)}</span>`];
-  vals.forEach((v,i)=>{if(cells[i+4])cells[i+4].innerHTML=v;});
-}
-
-function updateDetailKpisDOM(){
-  let eH=0,aH=0,eC=0,aC=0;
-  document.querySelectorAll(".cell-input").forEach(inp=>{
-    const f=inp.dataset.f,v=num(inp.value);
-    if(f==="estHrs")eH+=v; if(f==="actHrs")aH+=v;
-    if(["estLabor","estMatl","estEquip"].includes(f))eC+=v;
-    if(["actLabor","actMatl","actEquip"].includes(f))aC+=v;
-  });
-  setDetailKpis(eH,aH,eC,aC);
-}
-function updateDetailKpis(id){const t=jobTotals(jobs[id]||{});setDetailKpis(t.eH,t.aH,t.estCost,t.actCost);}
-function setDetailKpis(eH,aH,eC,aC){
-  const vD=aC-eC,vP=eC?vD/eC:0;
-  ge("dk_eh").textContent=f1(eH); ge("dk_ah").textContent=f1(aH);
-  ge("dk_ec").textContent=fD(eC); ge("dk_ac").textContent=fD(aC);
-  ge("dk_v").textContent=fD(vD); ge("dk_vp").textContent=fP(vP);
-}
-
-window.saveDetail=async function(){
-  if(!curJob){toast("No job selected","err");return;}
-  const pd={};
-  document.querySelectorAll(".cell-input").forEach(inp=>{
-    const s=inp.dataset.s,p=inp.dataset.p,f=inp.dataset.f;
-    if(!s||!p||!f)return;
-    const k=pKey(s,parseInt(p));
-    if(!pd[k])pd[k]={svc:s,phase:parseInt(p)};
-    pd[k][f]=["notes","laborers"].includes(f)?inp.value:num(inp.value);
-  });
-  jobs[curJob].phases=pd;
-  try{await setDoc(doc(db,"jobs",curJob),jobs[curJob],{merge:true});toast("Saved ✓","ok");}
-  catch(e){toast("Save error: "+e.message,"err");return;}
-  renderAll();
-};
-
-window.clearDetail=function(){
-  document.querySelectorAll(".cell-input").forEach(inp=>inp.value="");
-  document.querySelectorAll("[data-c]").forEach(el=>{el.textContent="—";el.className="var-zero";});
-  updateDetailKpisDOM();
-};
-
-window.clearPhase=function(svc,phase){
-  confirm2("Clear Phase","Clear all data from "+PL(phase)+" of \""+svc+"\"? Only this phase row is cleared.",
-    async()=>{
-      document.querySelectorAll(`.cell-input[data-s="${svc}"][data-p="${phase}"]`).forEach(inp=>inp.value="");
-      document.querySelectorAll(`[data-c][data-s="${svc}"][data-p="${phase}"]`).forEach(el=>{el.textContent="—";el.className="var-zero";});
-      recalcSub(svc); updateDetailKpisDOM();
-      if(curJob&&jobs[curJob]?.phases){
-        delete jobs[curJob].phases[pKey(svc,parseInt(phase))];
-        try{await setDoc(doc(db,"jobs",curJob),jobs[curJob],{merge:true});toast("Phase cleared ✓","ok");}
-        catch(e){toast("Error: "+e.message,"err");}
-      }
-    });
-};
-
-// ── SEARCH ───────────────────────────────────────────────────────────────
-window.doSearch=function(){
-  const q=(ge("s_q").value||"").toLowerCase().trim();
-  const sv=ge("s_svc").value,eq=(ge("s_equip").value||"").toLowerCase().trim();
-  const lb=(ge("s_labor").value||"").toLowerCase().trim();
-  const st=ge("s_status").value,df=ge("s_from").value,dt=ge("s_to").value;
-  const vd=ge("s_vdir").value;
-  const mn=parseFloat(ge("s_min").value)||0,mx=parseFloat(ge("s_max").value)||Infinity;
-  const hasF=q||sv||eq||lb||st||df||dt||vd||mn||mx<Infinity;
-  const tbody=ge("srchBody"),tfoot=ge("srchFoot");
-  tbody.innerHTML=""; tfoot.innerHTML="";
-  if(!hasF){
-    tbody.innerHTML='<tr><td colspan="12" class="no-results">Enter search criteria above.</td></tr>';
-    ["srchCount","srchCount2"].forEach(i=>ge(i).textContent="");
-    ge("srchMatchCard").style.display="none"; return;
-  }
-  const svcCounts={};
-  const res=sortedJobs().filter(([id,data])=>{
-    const m=data.meta||{},ph=data.phases||{},t=jobTotals(data);
-    const vD=t.actCost-t.estCost,vP=t.estCost?vD/t.estCost:0;
-    const ac=t.actCost||t.estCost;
-    if(q){
-      const meta=[m.jobNum,m.name,m.client,m.notes,m.date,m.status].join(" ").toLowerCase();
-      const pn=Object.values(ph).map(p=>[p.notes,p.laborers,p.svc].join(" ")).join(" ").toLowerCase();
-      if(!meta.includes(q)&&!pn.includes(q))return false;
-    }
-    if(sv&&!jobUsesSvc(data,sv))return false;
-    if(eq){const an=Object.values(ph).map(p=>(p.notes||"").toLowerCase()).join(" ");if(!an.includes(eq))return false;}
-    if(lb){const al=Object.values(ph).map(p=>[(p.laborers||""),(p.crew||"")].join(" ").toLowerCase()).join(" ");if(!al.includes(lb))return false;}
-    if(st&&m.status!==st)return false;
-    if(df&&m.date&&m.date<df)return false;
-    if(dt&&m.date&&m.date>dt)return false;
-    if(vd==="over"&&vD<=0)return false;
-    if(vd==="under"&&vD>=0)return false;
-    if(vd==="on"&&Math.abs(vP)>0.05)return false;
-    if(ac<mn||ac>mx)return false;
-    return true;
-  });
-  let tEC=0,tAC=0;
-  if(!res.length){tbody.innerHTML='<tr><td colspan="12" class="no-results">No jobs match.</td></tr>';}
-  else{
-    res.forEach(([id,data])=>{
-      const m=data.meta||{},ph=data.phases||{},t=jobTotals(data);
-      tEC+=t.estCost; tAC+=t.actCost;
-      const vD=t.actCost-t.estCost,vP=t.estCost?vD/t.estCost:0;
-      const sc="status-"+(m.status||"Scheduled").replace(/\s+/g,"-");
-      const used=SVCS().filter(s=>jobUsesSvc(data,s));
-      used.forEach(s=>{svcCounts[s]=(svcCounts[s]||0)+1;});
-      let mnote="";
-      if(eq){
-        const hits=[];
-        SVCS().forEach(svc=>{for(let p=1;p<=PC()+5;p++){const x=ph[pKey(svc,p)]||{};if((x.notes||"").toLowerCase().includes(eq))hits.push(svc+" Ph"+p+": \""+x.notes+"\"");}});
-        mnote=hits.slice(0,2).join(" | ")+(hits.length>2?" +more":"");
-      }
-      const tags=used.slice(0,4).map(s=>`<span class="svc-tag">${esc(s)}</span>`).join("")+(used.length>4?`<span class="svc-tag">+${used.length-4}</span>`:"");
-      const tr=document.createElement("tr");
-      tr.innerHTML=`<td>${esc(m.jobNum||"")}</td>
-        <td style="text-align:left">${esc(m.name||"")}</td>
-        <td style="text-align:left">${esc(m.client||"")}</td>
-        <td class="center">${esc(m.date||"")}</td>
-        <td style="text-align:left"><div class="matched-svcs">${tags}</div></td>
-        <td><div class="notes-match" title="${esc(mnote)}">${esc(mnote||"—")}</div></td>
-        <td>${fD(t.estCost)}</td><td>${fD(t.actCost)}</td>
-        <td class="${vC(vD)}">${fD(vD)}</td><td class="${vC(vP)}">${fP(vP)}</td>
-        <td class="center"><span class="status-badge ${sc}">${esc(m.status||"—")}</span></td>
-        <td class="center no-print"><button class="btn-edit btn-sm" onclick="goToDetail('${esc(id)}')">Open</button></td>`;
-      tbody.appendChild(tr);
-    });
-    const tV=tAC-tEC,tVP=tEC?tV/tEC:0;
-    tfoot.innerHTML=`<tr><td colspan="6">TOTALS (${res.length})</td>
-      <td>${fD(tEC)}</td><td>${fD(tAC)}</td>
-      <td class="${vC(tV)}">${fD(tV)}</td><td class="${vC(tVP)}">${fP(tVP)}</td>
-      <td colspan="2"></td></tr>`;
-  }
-  const cnt=res.length,cs=cnt+" result"+(cnt!==1?"s":"");
-  ge("srchCount").textContent=cs; ge("srchCount2").textContent=cs;
-  if(Object.keys(svcCounts).length){
-    ge("srchMatchCard").style.display="";
-    ge("srchMatchTitle").textContent="Services in "+cnt+" Result"+(cnt!==1?"s":"");
-    const sorted=Object.entries(svcCounts).sort((a,b)=>b[1]-a[1]);
-    ge("srchMatchBody").innerHTML='<div class="matched-svcs">'+
-      sorted.map(([s,c])=>`<span class="svc-tag">${esc(s)} (${c})</span>`).join("")+"</div>";
-  } else ge("srchMatchCard").style.display="none";
-};
-window.clearSearch=function(){
-  ["s_q","s_equip","s_labor","s_from","s_to","s_min","s_max"].forEach(i=>ge(i).value="");
-  ["s_svc","s_status","s_vdir"].forEach(i=>ge(i).value="");
-  ge("srchBody").innerHTML='<tr><td colspan="12" class="no-results">Enter search criteria above.</td></tr>';
-  ge("srchFoot").innerHTML=""; ["srchCount","srchCount2"].forEach(i=>ge(i).textContent="");
-  ge("srchMatchCard").style.display="none";
-};
-
-// ── CSV IMPORT ────────────────────────────────────────────────────────────
-window.handleDrop=function(e){
-  e.preventDefault(); ge("dropZone").classList.remove("over");
-  const f=e.dataTransfer.files[0]; if(f)readCSV(f);
-};
-window.handleFile=function(e){const f=e.target.files[0];if(f)readCSV(f);};
-
-function readCSV(file){
-  impFile=file.name;
-  const reader=new FileReader();
-  reader.onload=ev=>{
-    const rows=parseCSV(ev.target.result);
-    if(!rows.length){toast("Could not parse CSV","err");return;}
-    impHdrs=rows[0];
-    impRows=rows.slice(1).filter(r=>r.some(c=>c.trim()));
-    ge("fileName").textContent=file.name;
-    ge("fileRows").textContent=impRows.length+" rows";
-    ge("fileInfo").style.display="flex";
-    ge("dropZone").style.display="none";
-    buildColMap();
-    toStep(2);
-  };
-  reader.readAsText(file);
-}
-
-function parseCSV(txt){
-  const rows=[]; let row=[],field="",inQ=false;
-  for(let i=0;i<txt.length;i++){
-    const c=txt[i],n=txt[i+1];
-    if(inQ){if(c==='"'&&n==='"'){field+='"';i++;}else if(c==='"')inQ=false;else field+=c;}
-    else if(c==='"')inQ=true;
-    else if(c===','){row.push(field.trim());field="";}
-    else if(c==='\r'||c==='\n'){if(c==='\r'&&n==='\n')i++;if(row.length||field){row.push(field.trim());rows.push(row);row=[];field="";}}
-    else field+=c;
-  }
-  if(field||row.length){row.push(field.trim());rows.push(row);}
-  return rows;
-}
-
-const AMP_MAP={"Project ID":"jobNum","Project Name":"jobName","Service Name":"serviceName","Cost Type":"costType","Actual Cost Name":"costName","Estimated Units":"estUnits","Units":"actUnits","Estimated Quantity":"estQty","Quantity":"actQty","Unit Cost":"unitCost","Total Cost":"totalCost","Date":"date","Notes":"notes","Crew":"crew"};
-const APP_FIELDS=[{v:"jobNum",l:"Job #"},{v:"jobName",l:"Job Name"},{v:"date",l:"Date"},{v:"serviceName",l:"Service Name"},{v:"costType",l:"Cost Type (Labor/Materials/Equipment/Other)"},{v:"costName",l:"Cost Item Name"},{v:"estUnits",l:"Est Units/Hours"},{v:"actUnits",l:"Act Units/Hours"},{v:"estQty",l:"Est Quantity"},{v:"actQty",l:"Act Quantity"},{v:"unitCost",l:"Unit Cost ($)"},{v:"totalCost",l:"Total Actual Cost ($)"},{v:"notes",l:"Notes"},{v:"crew",l:"Crew"},{v:"skip",l:"— Skip —"}];
-
-function buildColMap(){
-  const grid=ge("colMapGrid"); grid.innerHTML=""; impColMap={};
-  let allMapped=true;
-  impHdrs.forEach((h,i)=>{
-    const mapped=AMP_MAP[h]||"skip";
-    impColMap[i]=mapped;
-    if(mapped==="skip"&&h)allMapped=false;
-    const div=document.createElement("div"); div.className="map-row";
-    const opts=APP_FIELDS.map(f=>`<option value="${f.v}"${f.v===mapped?" selected":""}>${esc(f.l)}</option>`).join("");
-    div.innerHTML=`<label>CSV: "${esc(h)}"</label><select onchange="impColMap[${i}]=this.value">${opts}</select>`;
-    grid.appendChild(div);
-  });
-  ge("autoBadge").style.display=allMapped?"":"none";
-}
-
-function colIdx(f){return parseInt(Object.entries(impColMap).find(([,v])=>v===f)?.[0]??"-1");}
-
-function suggestSvc(n){
-  const u=n.toUpperCase();
-  if(u.includes("1ST")&&u.includes("BINDER"))return"1st Lift Binder Paving";
-  if(u.includes("2ND")&&u.includes("SURFACE"))return"2nd Lift Surface Paving";
-  if(u.includes("DRIVEWAY PAVING")||u.includes('3"'))return'3" Pave';
-  if(u.includes("SPRAY PATCH"))return"Spray Patch Repair";
-  if(u.includes("INFRARED"))return"Infrared Repair";
-  if(u.includes("FULL DEPTH"))return"Full Depth Patch";
-  if(u.includes("MILL"))return"Mill and Patch";
-  if(u.includes("CONCRETE FLAT"))return"Concrete Flatwork";
-  if(u.includes("EXCAVAT"))return"Excavation";
-  if(u.includes("BASE COARSE")||u.includes("GRAVEL"))return"Gravel Placement";
-  if(u.includes("REMOVE ASPHALT"))return"Removal of Asphalt";
-  if(u.includes("REMOVE CONCRETE"))return"Removal of Concrete";
-  if(u.includes("FINE GRAD"))return"Fine Grading";
-  if(u.includes("CRACK"))return"Hot Crack Sealing";
-  if(u.includes("PULVERIZ"))return"Pulverize and Fine Grade";
-  if(u.includes("SEAL")&&u.includes("DRIV"))return"Sealcoating Driveway";
-  if(u.includes("SEAL")&&u.includes("1 COAT"))return"Sealcoating Parking Lot 1 Coat";
-  if(u.includes("SEAL")&&u.includes("2 COAT"))return"Sealcoating Parking Lot 2 Coat";
-  if(u.includes("SQUEEGEE")||u.includes("BRUSH"))return"Sealcoat Squeegee/Brush Applied";
-  if(u.includes("CRACKFILL"))return"Sealcoat/Crackfill Together";
-  if(u.includes("STRIP"))return"Striping";
-  if(u.includes("SURFACE PREP")||u.includes("PREP"))return"Surface Prep";
-  return"Miscellaneous";
-}
-
-window.toStep=function(n){
-  [1,2,3,4].forEach(i=>ge("impStep"+i).style.display=i===n?"":"none");
-  if(n===3){
-    const csvSvcs=[...new Set(impRows.map(r=>r[colIdx("serviceName")]||"").filter(Boolean))];
-    const grid=ge("svcMapGrid"); grid.innerHTML=""; impSvcMap={};
-    const appSvcs=SVCS();
-    csvSvcs.forEach(cs=>{
-      const sg=suggestSvc(cs); impSvcMap[cs]=sg;
-      const div=document.createElement("div"); div.className="map-row";
-      const opts=appSvcs.map(s=>`<option value="${esc(s)}"${s===sg?" selected":""}>${esc(s)}</option>`).join("");
-      div.innerHTML=`<label>CSV: "${esc(cs)}"</label><select onchange="impSvcMap['${esc(cs)}']=this.value">${opts}</select>`;
-      grid.appendChild(div);
-    });
-  }
-  if(n===4) buildPreview();
-};
-
-function buildImportData(){
-  const jMap={};
-  impRows.forEach(row=>{
-    const jobNum=(row[colIdx("jobNum")]||"").trim();
-    const jobName=(row[colIdx("jobName")]||"").trim();
-    const csvSvc=(row[colIdx("serviceName")]||"").trim();
-    const appSvc=impSvcMap[csvSvc]||"Miscellaneous";
-    const costType=(row[colIdx("costType")]||"").trim();
-    const costName=(row[colIdx("costName")]||"").trim();
-    const eu=num(row[colIdx("estUnits")]),au=num(row[colIdx("actUnits")]);
-    const eq=num(row[colIdx("estQty")]),aq=num(row[colIdx("actQty")]);
-    const uc=num(row[colIdx("unitCost")]),tc=num(row[colIdx("totalCost")]);
-    const date=(row[colIdx("date")]||"").trim();
-    const notes=(row[colIdx("notes")]||"").trim();
-    const crew=(row[colIdx("crew")]||"").trim();
-    if(!jobNum)return;
-    if(!jMap[jobNum])jMap[jobNum]={meta:{jobNum,name:jobName,date,status:"Complete"},phases:{},_sp:{}};
-    const jd=jMap[jobNum];
-    const varKey=appSvc+"|||"+csvSvc;
-    if(!jd._sp[varKey]){const cnt=Object.keys(jd._sp).filter(k=>k.startsWith(appSvc+"|||")).length;jd._sp[varKey]=cnt+1;}
-    const phNum=jd._sp[varKey];
-    const k=pKey(appSvc,phNum);
-    if(!jd.phases[k])jd.phases[k]={svc:appSvc,phase:phNum,estHrs:0,actHrs:0,estLabor:0,actLabor:0,estMatl:0,actMatl:0,estEquip:0,actEquip:0,notes:"",laborers:"",crew:""};
-    const ph=jd.phases[k];
-    if(costName&&!ph.notes.includes(costName))ph.notes+=(ph.notes?", ":"")+costName;
-    if(crew&&!ph.crew)ph.crew=crew;
-    if(notes&&!ph.notes.includes(notes))ph.notes+=(ph.notes?"; ":"")+notes;
-    if(costType==="Labor"){ph.estHrs+=eu;ph.actHrs+=au;ph.estLabor+=eu*uc;ph.actLabor+=tc;
-      const ln=costName.replace(/ - Labor Rates$/i,"").trim();
-      if(ln&&!ph.laborers.includes(ln))ph.laborers+=(ph.laborers?", ":"")+ln;
-    } else if(costType==="Materials"){ph.estMatl+=eq*uc;ph.actMatl+=tc;}
-    else if(costType==="Equipment"||costType==="Other"){ph.estEquip+=eu*uc;ph.actEquip+=tc;}
-  });
-  return Object.values(jMap);
-}
-
-function buildPreview(){
-  const prev=buildImportData();
-  const div=ge("impPreview"); div.innerHTML="";
-  prev.forEach(job=>{
-    const m=job.meta;
-    const hdr=document.createElement("div");
-    hdr.className="import-job-hdr";
-    hdr.innerHTML=`<span>Job #${esc(m.jobNum)}</span><span>${esc(m.name)}</span><span>${Object.keys(job.phases).length} phase entries</span>`;
-    div.appendChild(hdr);
-    const wrap=document.createElement("div");
-    wrap.style.overflowX="auto";
-    const tbl=document.createElement("table");
-    tbl.className="data-table";
-    tbl.innerHTML=`<thead><tr><th style="text-align:left">Service</th><th>Ph</th><th>Est Hrs</th><th>Act Hrs</th><th>Est Labor</th><th>Act Labor</th><th>Est Matl</th><th>Act Matl</th><th>Est Equip</th><th>Act Equip</th><th style="text-align:left">Notes</th></tr></thead>`;
-    const tb=document.createElement("tbody");
-    Object.entries(job.phases).sort().forEach(([,ph])=>{
-      const tr=document.createElement("tr");
-      tr.innerHTML=`<td>${esc(ph.svc)}</td><td class="center">${ph.phase}</td>
-        <td>${f1(num(ph.estHrs))}</td><td>${f1(num(ph.actHrs))}</td>
-        <td>${fD(num(ph.estLabor))}</td><td>${fD(num(ph.actLabor))}</td>
-        <td>${fD(num(ph.estMatl))}</td><td>${fD(num(ph.actMatl))}</td>
-        <td>${fD(num(ph.estEquip))}</td><td>${fD(num(ph.actEquip))}</td>
-        <td>${esc(ph.notes||"")}</td>`;
-      tb.appendChild(tr);
-    });
-    tbl.appendChild(tb); wrap.appendChild(tbl); div.appendChild(wrap);
-  });
-}
-
-window.confirmImport=function(){
-  const prev=buildImportData();
-  if(!prev.length){toast("Nothing to import","err");return;}
-  confirm2("Confirm Import",
-    "Import "+prev.length+" job"+(prev.length!==1?"s":"")+"?\n\nJobs: "+prev.map(j=>j.meta.jobNum).join(", ")+"\n\nExisting jobs with same Job # will be overwritten.",
-    async()=>{
-      const batchId="batch_"+Date.now();
-      const jobIds=[],jobNums=[];
-      for(const job of prev){
-        const id="job_"+job.meta.jobNum.replace(/[^a-zA-Z0-9]/g,"_");
-        if(!jobs[id])jobs[id]={meta:{},phases:{}};
-        jobs[id].meta=job.meta; jobs[id].phases=job.phases;
-        try{await setDoc(doc(db,"jobs",id),jobs[id]);}
-        catch(e){toast("Error: "+e.message,"err");return;}
-        jobIds.push(id); jobNums.push(job.meta.jobNum);
-      }
-      const entry={batchId,fileName:impFile,jobIds,jobNums,importedAt:new Date().toISOString()};
-      try{await setDoc(doc(db,"importHistory",batchId),entry);}catch(e){}
-      try{const loc=JSON.parse(localStorage.getItem("amp_hist")||"[]");loc.unshift(entry);localStorage.setItem("amp_hist",JSON.stringify(loc.slice(0,50)));}catch(e){}
-      toast("Imported "+prev.length+" job"+(prev.length!==1?"s":"")+" ✓","ok");
-      renderAll(); resetImport(); loadHistory(); showView("jobs");
-    });
-};
-
-window.resetImport=function(){
-  impRows=[]; impHdrs=[]; impColMap={}; impSvcMap={}; impFile="";
-  ge("fileInfo").style.display="none"; ge("dropZone").style.display="";
-  ge("csvFile").value="";
-  [2,3,4].forEach(n=>ge("impStep"+n).style.display="none");
-  ge("impStep1").style.display="";
-};
-
-window.loadHistory=async function(){
-  const tbody=ge("historyBody");
-  tbody.innerHTML=`<tr><td colspan="5" class="no-results">Loading…</td></tr>`;
-  let hist=[];
-  try{const snap=await getDocs(collection(db,"importHistory"));snap.forEach(d=>hist.push(d.data()));}catch(e){}
-  try{const loc=JSON.parse(localStorage.getItem("amp_hist")||"[]");loc.forEach(e=>{if(!hist.find(h=>h.batchId===e.batchId))hist.push(e);});}catch(e){}
-  hist.sort((a,b)=>(b.importedAt||"").localeCompare(a.importedAt||""));
-  tbody.innerHTML="";
-  if(!hist.length){tbody.innerHTML=`<tr><td colspan="5" class="no-results">No imports yet.</td></tr>`;return;}
-  hist.forEach(entry=>{
-    const dt=entry.importedAt?new Date(entry.importedAt):null;
-    const dtStr=dt?dt.toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})+" "+dt.toLocaleTimeString("en-US",{hour:"2-digit",minute:"2-digit"}):"Unknown";
-    const cnt=(entry.jobIds||[]).length;
-    const numsStr=(entry.jobNums||[]).slice(0,8).join(", ")+((entry.jobNums||[]).length>8?" …":"");
-    const exists=(entry.jobIds||[]).some(id=>jobs[id]);
-    const tr=document.createElement("tr");
-    tr.innerHTML=`<td>${esc(dtStr)}</td>
-      <td style="text-align:left">${esc(entry.fileName||"—")}</td>
-      <td class="center"><span class="batch-tag">${cnt}</span></td>
-      <td style="text-align:left;font-size:11px">${esc(numsStr||"—")}</td>
-      <td class="center no-print">${exists
-        ?`<button class="undo-btn" onclick="undoImport('${esc(entry.batchId)}')">↩ Undo</button>`
-        :`<span style="font-size:11px;color:var(--text3)">Already deleted</span>`}</td>`;
-    tbody.appendChild(tr);
-  });
-};
-
-window.undoImport=async function(batchId){
-  let entry=null;
-  try{const d=await getDoc(doc(db,"importHistory",batchId));if(d.exists())entry=d.data();}catch(e){}
-  if(!entry){try{entry=JSON.parse(localStorage.getItem("amp_hist")||"[]").find(h=>h.batchId===batchId);}catch(e){}}
-  if(!entry){toast("Batch not found","err");return;}
-  const existing=(entry.jobIds||[]).filter(id=>jobs[id]);
-  if(!existing.length){toast("All jobs from this import already deleted","");loadHistory();return;}
-  confirm2("Undo Import",
-    "Delete "+existing.length+" job"+(existing.length!==1?"s":"")+" from this import?\n\nJobs: "+existing.map(id=>jobs[id]?.meta?.jobNum||id).join(", ")+"\n\nThis CANNOT be undone.",
-    async()=>{
-      for(const id of existing){try{await deleteDoc(doc(db,"jobs",id));}catch(e){}delete jobs[id];if(curJob===id){curJob=null;showDetailEmpty();}}
-      try{await deleteDoc(doc(db,"importHistory",batchId));}catch(e){}
-      try{const loc=JSON.parse(localStorage.getItem("amp_hist")||"[]");localStorage.setItem("amp_hist",JSON.stringify(loc.filter(h=>h.batchId!==batchId)));}catch(e){}
-      renderAll(); loadHistory(); toast("Undo complete ✓","ok");
-    });
-};
-
-// ── CONFIG ────────────────────────────────────────────────────────────────
-window.showCfg=function(tab){
-  document.querySelectorAll(".cfg-tab").forEach(t=>t.classList.remove("active"));
-  document.querySelectorAll(".cfg-panel").forEach(p=>p.classList.remove("active"));
-  document.querySelector(`[onclick="showCfg('${tab}')"]`).classList.add("active");
-  ge("cfgPanel-"+tab).classList.add("active");
-};
-
-function renderCfgAll(){
-  renderCfgSection("labor",["Name","Rate ($/hr)","Role","Active","Actions"],item=>`
-    <td style="text-align:left"><input class="cfg-input wide" value="${esc(item.name)}" onchange="cfgUpdate('labor',${item._i},'name',this.value)"/></td>
-    <td class="center">$<input class="cfg-input" type="number" step="0.5" value="${item.rate}" onchange="cfgRateConfirm('labor',${item._i},${item.rate},this)"/>/hr</td>
-    <td class="center"><input class="cfg-input medium" value="${esc(item.role||"")}" onchange="cfgUpdate('labor',${item._i},'role',this.value)"/></td>
-    <td class="center"><button class="toggle-btn" onclick="cfgToggle('labor',${item._i})">${item.active!==false?"✅":"⬜"}</button></td>
-    <td class="center no-print"><button class="del-btn" onclick="cfgDel('labor',${item._i})">✕</button></td>`);
-
-  const groups=(cfg.egroups||[]).map(g=>g.name);
-  const gOpts=(sel)=>groups.map(g=>`<option${g===sel?" selected":""}>${esc(g)}</option>`).join("");
-  renderCfgSection("equipment",["Name","Rate ($/hr)","Group","Active","Actions"],item=>`
-    <td style="text-align:left"><input class="cfg-input wide" value="${esc(item.name)}" onchange="cfgUpdate('equipment',${item._i},'name',this.value)"/></td>
-    <td class="center">$<input class="cfg-input" type="number" step="0.5" value="${item.rate}" onchange="cfgRateConfirm('equipment',${item._i},${item.rate},this)"/>/hr</td>
-    <td class="center"><select class="cfg-input medium" onchange="cfgUpdate('equipment',${item._i},'group',this.value)"><option value=""></option>${gOpts(item.group)}</select></td>
-    <td class="center"><button class="toggle-btn" onclick="cfgToggle('equipment',${item._i})">${item.active!==false?"✅":"⬜"}</button></td>
-    <td class="center no-print"><button class="del-btn" onclick="cfgDel('equipment',${item._i})">✕</button></td>`);
-
-  renderCfgSection("egroups",["Group Name","Description","Actions"],item=>`
-    <td style="text-align:left"><input class="cfg-input wide" value="${esc(item.name)}" onchange="cfgUpdate('egroups',${item._i},'name',this.value)"/></td>
-    <td style="text-align:left"><input class="cfg-input" style="width:260px" value="${esc(item.desc||"")}" onchange="cfgUpdate('egroups',${item._i},'desc',this.value)"/></td>
-    <td class="center no-print"><button class="del-btn" onclick="cfgDel('egroups',${item._i})">✕</button></td>`);
-
-  renderCfgSection("materials",["Name","Unit","Rate","Category","Active","Actions"],item=>`
-    <td style="text-align:left"><input class="cfg-input wide" value="${esc(item.name)}" onchange="cfgUpdate('materials',${item._i},'name',this.value)"/></td>
-    <td class="center"><input class="cfg-input" style="width:60px" value="${esc(item.unit||"")}" onchange="cfgUpdate('materials',${item._i},'unit',this.value)"/></td>
-    <td class="center">$<input class="cfg-input" type="number" step="0.01" value="${item.rate}" onchange="cfgRateConfirm('materials',${item._i},${item.rate},this)"/></td>
-    <td class="center"><input class="cfg-input medium" value="${esc(item.category||"")}" onchange="cfgUpdate('materials',${item._i},'category',this.value)"/></td>
-    <td class="center"><button class="toggle-btn" onclick="cfgToggle('materials',${item._i})">${item.active!==false?"✅":"⬜"}</button></td>
-    <td class="center no-print"><button class="del-btn" onclick="cfgDel('materials',${item._i})">✕</button></td>`);
-
-  renderCfgSection("services",["#","Service Name","Active","Actions"],item=>`
-    <td class="center" style="color:var(--text3)">${item._i+1}</td>
-    <td style="text-align:left"><input class="cfg-input" style="width:280px" value="${esc(item.name)}" onchange="cfgUpdate('services',${item._i},'name',this.value)"/></td>
-    <td class="center"><button class="toggle-btn" onclick="cfgToggle('services',${item._i})">${item.active!==false?"✅":"⬜"}</button></td>
-    <td class="center no-print"><button class="del-btn" onclick="cfgDel('services',${item._i})">✕</button></td>`);
-
-  // Phases
-  ge("phaseCount").value=PC();
-  const cont=ge("phaseLbls"); cont.innerHTML="";
-  for(let p=1;p<=PC();p++){
-    const div=document.createElement("div");
-    div.innerHTML=`<label style="font-size:11px;font-weight:600;color:var(--text2)">Phase ${p}</label>
-      <input type="text" class="cfg-input wide" style="display:block;margin-top:4px" placeholder="Phase ${p}"
-        value="${esc((cfg.phaseLabels||{})[p]||"")}" onchange="tmpPL[${p}]=this.value"/>`;
-    cont.appendChild(div);
-  }
-}
-
-function renderCfgSection(type,headers,rowFn){
-  const tbody=ge("cfg_"+type); if(!tbody)return;
-  tbody.innerHTML="";
-  (cfg[type]||[]).forEach((item,i)=>{
-    item._i=i;
-    const tr=document.createElement("tr");
-    tr.innerHTML=rowFn(item);
-    tbody.appendChild(tr);
-  });
-}
-
-let tmpPL={};
-window.cfgUpdate=async function(type,idx,field,value){
-  cfg[type][idx][field]=value;
-  await saveCfgDB(); toast("Saved ✓","ok");
-  renderCfgAll(); fillSvcDropdowns();
-};
-window.cfgRateConfirm=function(type,idx,oldRate,inputEl){
-  const newRate=parseFloat(inputEl.value);
-  if(isNaN(newRate)||newRate<0){inputEl.value=oldRate;toast("Invalid rate","err");return;}
-  const item=cfg[type][idx];
-  confirm2("Confirm Rate Change","Change rate for \""+item.name+"\" from $"+oldRate+" to $"+newRate+"?",
-    async()=>{cfg[type][idx].rate=newRate;await saveCfgDB();toast("Rate updated ✓","ok");renderCfgAll();});
-};
-window.cfgToggle=function(type,idx){
-  const item=cfg[type][idx],action=item.active===false?"activate":"deactivate";
-  confirm2("Confirm",action.charAt(0).toUpperCase()+action.slice(1)+" \""+item.name+"\"?",
-    async()=>{cfg[type][idx].active=item.active===false;await saveCfgDB();toast("Updated ✓","ok");renderCfgAll();fillSvcDropdowns();});
-};
-window.cfgDel=function(type,idx){
-  const item=cfg[type][idx];
-  confirm2("Delete Item","Permanently delete \""+item.name+"\"? Cannot be undone.",
-    async()=>{cfg[type].splice(idx,1);await saveCfgDB();toast("Deleted ✓","ok");renderCfgAll();fillSvcDropdowns();});
-};
-
-window.savePhaseCount=function(){
-  const n=parseInt(ge("phaseCount").value)||5;
-  confirm2("Change Phase Count","Set phases per service to "+n+"? Takes effect immediately.",
-    async()=>{cfg.phaseCount=n;tmpPL={};await saveCfgDB();toast("Updated ✓","ok");renderCfgAll();renderAll();});
-};
-window.savePhaseLabels=async function(){
-  if(!cfg.phaseLabels)cfg.phaseLabels={};
-  Object.entries(tmpPL).forEach(([p,v])=>{cfg.phaseLabels[p]=v||undefined;});
-  tmpPL={};
-  await saveCfgDB(); toast("Labels saved ✓","ok"); renderAll();
-};
-
-// Add config item modal
-let _cfgAddType=null;
-window.addCfg=function(type){
-  _cfgAddType=type;
-  ge("cfgModalTitle").textContent={labor:"Add Laborer",equipment:"Add Equipment",egroups:"Add Group",materials:"Add Material",services:"Add Service"}[type];
-  const form=ge("cfgModalForm"); form.innerHTML="";
-  const fields={
-    labor:[{id:"name",l:"Name",p:"Employee Name"},{id:"rate",l:"Rate ($/hr)",type:"number",step:"0.5",p:"55"},{id:"role",l:"Role",p:"Laborer"}],
-    equipment:[{id:"name",l:"Equipment Name",p:"T-2027 WESTERN STAR"},{id:"rate",l:"Rate ($/hr)",type:"number",step:"0.5",p:"145"},{id:"group",l:"Group",p:"Trucks"}],
-    egroups:[{id:"name",l:"Group Name",p:"Trucks"},{id:"desc",l:"Description",p:"Description"}],
-    materials:[{id:"name",l:"Name",p:"Material Name"},{id:"unit",l:"Unit",p:"ton"},{id:"rate",l:"Rate",type:"number",step:"0.01",p:"0"},{id:"category",l:"Category",p:"Asphalt"}],
-    services:[{id:"name",l:"Service Name",p:"New Service Type"}],
-  }[type]||[];
-  fields.forEach(f=>{
-    const lbl=document.createElement("label");
-    lbl.innerHTML=`${esc(f.l)}<input type="${f.type||"text"}" id="cfgNew_${f.id}" placeholder="${f.p||""}" step="${f.step||""}"/>`;
-    form.appendChild(lbl);
-  });
-  ge("cfgModal").style.display="flex";
-};
-window.closeCfgModal=()=>{ge("cfgModal").style.display="none";_cfgAddType=null;};
-window.saveCfgItem=async function(){
-  if(!_cfgAddType)return;
-  const gv=id=>{const el=ge("cfgNew_"+id);return el?el.value.trim():"";};
-  let item;
-  if(_cfgAddType==="labor")item={id:uid(),name:gv("name"),rate:parseFloat(gv("rate"))||55,role:gv("role"),active:true};
-  else if(_cfgAddType==="equipment")item={id:uid(),name:gv("name"),rate:parseFloat(gv("rate"))||145,group:gv("group"),active:true};
-  else if(_cfgAddType==="egroups")item={id:uid(),name:gv("name"),desc:gv("desc")};
-  else if(_cfgAddType==="materials")item={id:uid(),name:gv("name"),unit:gv("unit"),rate:parseFloat(gv("rate"))||0,category:gv("category"),active:true};
-  else if(_cfgAddType==="services")item={id:uid(),name:gv("name"),active:true};
-  if(!item?.name){toast("Name is required","err");return;}
-  if(!cfg[_cfgAddType])cfg[_cfgAddType]=[];
-  cfg[_cfgAddType].push(item);
-  await saveCfgDB(); toast("Added ✓","ok");
-  closeCfgModal(); renderCfgAll(); fillSvcDropdowns();
-};
-
-// ── INSIGHTS ─────────────────────────────────────────────────────────────
-function getSvcTgt(svc){return parseFloat((cfg.svcTargets||{})[svc])||parseFloat(ge("tgt_overall")?.value)||20;}
-window.updateSvcTgt=async function(svc,val){
-  if(!cfg.svcTargets)cfg.svcTargets={};
-  cfg.svcTargets[svc]=parseFloat(val)||20;
-  await saveCfgDB(); renderInsights();
-};
-window.saveTargets=async function(){
-  cfg.insightTargets={overall:parseFloat(ge("tgt_overall").value)||20,flag:parseFloat(ge("tgt_flag").value)||10};
-  await saveCfgDB(); toast("Targets saved ✓","ok"); renderInsights();
-};
-
-window.renderInsights=function(){
-  const arr=Object.values(jobs);
-  const overallTgt=parseFloat(ge("tgt_overall")?.value)||(cfg.insightTargets?.overall??20);
-  const flagTgt=parseFloat(ge("tgt_flag")?.value)||(cfg.insightTargets?.flag??10);
-  if(cfg.insightTargets){
-    if(ge("tgt_overall")&&!ge("tgt_overall")._e)ge("tgt_overall").value=cfg.insightTargets.overall??20;
-    if(ge("tgt_flag")&&!ge("tgt_flag")._e)ge("tgt_flag").value=cfg.insightTargets.flag??10;
-  }
-  if(!arr.length){showInsightEmpty();return;}
-
-  // Aggregate per service
-  const sT={};
-  SVCS().forEach(s=>{sT[s]={name:s,jobs:0,eH:0,aH:0,eL:0,aL:0,eM:0,aM:0,eE:0,aE:0,eT:0,aT:0,hist:[]};});
-  arr.forEach(data=>{
-    const ph=data.phases||{};
-    SVCS().forEach(svc=>{
-      const st=sT[svc];
-      let eH=0,aH=0,eL=0,aL=0,eM=0,aM=0,eE=0,aE=0;
-      for(let p=1;p<=PC()+5;p++){
-        const x=ph[pKey(svc,p)]||{};
-        eH+=num(x.estHrs); aH+=num(x.actHrs); eL+=num(x.estLabor); aL+=num(x.actLabor);
-        eM+=num(x.estMatl); aM+=num(x.actMatl); eE+=num(x.estEquip); aE+=num(x.actEquip);
-      }
-      const eT2=eL+eM+eE,aT2=aL+aM+aE;
-      if(!eT2&&!aT2)return;
-      st.jobs++; st.eH+=eH; st.aH+=aH; st.eL+=eL; st.aL+=aL;
-      st.eM+=eM; st.aM+=aM; st.eE+=eE; st.aE+=aE;
-      st.eT+=eT2; st.aT+=aT2;
-      if(eT2>0)st.hist.push((aT2-eT2)/eT2);
-    });
-  });
-
-  const active=Object.values(sT).filter(s=>s.jobs>0);
-  const jobRanked=sortedJobs().map(([id,data])=>{
-    const t=jobTotals(data); const vD=t.actCost-t.estCost,vP=t.estCost?vD/t.estCost:0;
-    const lV=Math.abs(t.actCost-t.estCost>0?t.aL-t.eL:0);
-    const mV=Math.abs(t.aM-t.eM),eV=Math.abs(t.aE-t.eE);
-    const worst=Math.max(lV,mV,eV);
-    let issue="—";
-    if(worst===lV&&lV>0)issue="Labor hrs over";
-    else if(worst===mV&&mV>0)issue="Material cost over";
-    else if(worst===eV&&eV>0)issue="Equipment time over";
-    return{id,data,t,vD,vP,issue};
-  }).filter(j=>j.t.estCost>0||j.t.actCost>0).sort((a,b)=>a.vP-b.vP);
-
-  // KPIs
-  const bestSvc=[...active].sort((a,b)=>{const aV=a.eT?(a.aT-a.eT)/a.eT:0,bV=b.eT?(b.aT-b.eT)/b.eT:0;return aV-bV;})[0];
-  const worstSvc=[...active].sort((a,b)=>{const aV=a.eT?(a.aT-a.eT)/a.eT:0,bV=b.eT?(b.aT-b.eT)/b.eT:0;return bV-aV;})[0];
-  let accSum=0,accCnt=0;
-  active.forEach(s=>{if(s.eT>0){accSum+=Math.abs((s.aT-s.eT)/s.eT);accCnt++;}});
-  const avgAcc=accCnt?(1-accSum/accCnt):0;
-  const onTgt=jobRanked.filter(j=>Math.abs(j.vP)<=(overallTgt/100)*0.5).length;
-  let rcvr=0; active.forEach(s=>{if(s.aT>s.eT)rcvr+=(s.aT-s.eT);});
-
-  ge("ins_best").textContent=bestSvc?bestSvc.name:"—";
-  ge("ins_acc").textContent=(avgAcc*100).toFixed(1)+"%";
-  ge("ins_worst").textContent=worstSvc?worstSvc.name:"—";
-  ge("ins_ontgt").textContent=onTgt+" / "+jobRanked.length;
-  ge("ins_rcvr").textContent=fD(rcvr);
-  const wv=worstSvc&&worstSvc.eT?(worstSvc.aT-worstSvc.eT)/worstSvc.eT:0;
-  ge("ins_worstCard").className="kpi-card kpi-amber"+(wv>0.1?" over":"");
-
-  // Recommendations
-  const recs=[];
-  active.forEach(s=>{
-    const vP=s.eT?(s.aT-s.eT)/s.eT:0;
-    const hrVP=s.eH?(s.aH-s.eH)/s.eH:0;
-    const lVP=s.eL?(s.aL-s.eL)/s.eL:0;
-    const mVP=s.eM?(s.aM-s.eM)/s.eM:0;
-    const eVP=s.eE?(s.aE-s.eE)/s.eE:0;
-    if(vP>0.15&&s.jobs>=1){
-      const adj=Math.round((vP+0.05)*100);
-      const drvs=[];
-      if(lVP>0.10)drvs.push("labor (+"+lVP*100|0+"%)");
-      if(mVP>0.10)drvs.push("materials (+"+mVP*100|0+"%)");
-      if(eVP>0.10)drvs.push("equipment (+"+eVP*100|0+"%)");
-      recs.push({lvl:vP>0.30?"critical":"warning",icon:vP>0.30?"🚨":"⚠️",
-        title:s.name+" — Estimates Consistently Too Low",
-        detail:"Across "+s.jobs+" job"+(s.jobs!==1?"s":"")+", actuals average "+(vP*100).toFixed(1)+"% over estimate."+(drvs.length?" Driven by: "+drvs.join(", ")+".":" "),
-        action:"➡ Raise "+s.name+" estimates by "+adj+"%. If bidding $X, bid $"+(1+adj/100).toFixed(2)+"X.",
-        badge:"+"+Math.round(vP*100)+"% over",bc:vP>0.30?"rb-red":"rb-amber"});
-    }
-    if(hrVP>0.20&&s.eH>0){
-      recs.push({lvl:"warning",icon:"👷",
-        title:s.name+" — Labor Hours Underestimated",
-        detail:"Estimated "+f1(s.eH)+" hrs, actual "+f1(s.aH)+" hrs — "+(hrVP*100).toFixed(0)+"% over. Add ~"+Math.ceil((s.aH-s.eH)/s.jobs*10)/10+" hrs/job.",
-        action:"➡ Add "+(Math.ceil((s.aH-s.eH)/s.jobs*10)/10)+" hrs to each "+s.name+" labor estimate.",
-        badge:"+"+Math.round(hrVP*100)+"% hrs",bc:"rb-amber"});
-    }
-    if(vP<-0.10&&s.jobs>=1){
-      recs.push({lvl:"good",icon:"✅",
-        title:s.name+" — Beating Estimates",
-        detail:"Actuals are "+(Math.abs(vP)*100).toFixed(1)+"% under estimate — "+fD(Math.abs(s.aT-s.eT))+" under budget total.",
-        action:"➡ Consider tightening bids or keeping the extra margin to offset other services.",
-        badge:Math.round(vP*100)+"% under",bc:"rb-green"});
-    }
-  });
-  const flagged=jobRanked.filter(j=>j.vP>flagTgt/100);
-  if(flagged.length){
-    recs.push({lvl:"critical",icon:"📉",
-      title:flagged.length+" Job"+(flagged.length!==1?"s":"")+" Over "+flagTgt+"% Flag Threshold",
-      detail:flagged.slice(0,5).map(j=>"• Job "+(j.data.meta?.jobNum||j.id)+" ("+j.data.meta?.name+"): "+(j.vP*100).toFixed(1)+"% over — "+j.issue).join("\n")+(flagged.length>5?"\n• ...and "+(flagged.length-5)+" more":""),
-      action:"➡ Review Job Detail for each flagged job. Use Search → Over Budget to pull them all up.",
-      badge:flagged.length+" flagged",bc:"rb-red"});
-  }
-  if(!recs.filter(r=>r.lvl!=="good").length){
-    recs.push({lvl:"good",icon:"🎉",title:"Estimating Accuracy Looking Strong",
-      detail:"No critical variances detected. Keep entering job actuals to get more detailed analysis.",
-      action:"➡ Continue tracking actuals for every job phase.",badge:"On Track",bc:"rb-green"});
-  }
-  recs.sort((a,b)=>({critical:0,warning:1,good:2}[a.lvl]-({critical:0,warning:1,good:2}[b.lvl])));
-  ge("insightRecs").innerHTML='<div class="rec-list">'+recs.map(r=>`
-    <div class="rec-card ${r.lvl}">
-      <div class="rec-icon">${r.icon}</div>
-      <div class="rec-body">
-        <div class="rec-title">${esc(r.title)}</div>
-        <div class="rec-detail">${esc(r.detail).replace(/\n/g,"<br>")}</div>
-        <div class="rec-action">${esc(r.action)}</div>
-      </div>
-      <div class="rec-badge ${r.bc}">${esc(r.badge)}</div>
-    </div>`).join("")+"</div>";
-
-  // Service table
-  const sBody=ge("insSvcBody"); sBody.innerHTML="";
-  [...active].sort((a,b)=>(b.eT?(b.aT-b.eT)/b.eT:0)-(a.eT?(a.aT-a.eT)/a.eT:0)).forEach(s=>{
-    const vP=s.eT?(s.aT-s.eT)/s.eT:0,lVP=s.eL?(s.aL-s.eL)/s.eL:0;
-    const mVP=s.eM?(s.aM-s.eM)/s.eM:0,eVP=s.eE?(s.aE-s.eE)/s.eE:0;
-    let trend='<span style="color:var(--text3)">→</span>';
-    if(s.hist.length>=2){
-      const h1=s.hist.slice(0,Math.ceil(s.hist.length/2)),h2=s.hist.slice(Math.ceil(s.hist.length/2));
-      const a1=h1.reduce((a,b)=>a+b,0)/h1.length,a2=h2.reduce((a,b)=>a+b,0)/h2.length;
-      if(a2>a1+0.05)trend='<span style="color:var(--red)">↑ worse</span>';
-      else if(a2<a1-0.05)trend='<span style="color:var(--green)">↓ better</span>';
-    }
-    const tgt=getSvcTgt(s.name),am=(s.aT>0?(s.aT-s.eT)/s.aT*-100:0),gap=am-tgt;
-    let adj="—";
-    if(Math.abs(vP)>0.03)adj=vP>0?"Raise by "+Math.round(vP*100)+"%":"Can reduce by "+Math.round(Math.abs(vP)*100)+"%";
-    else adj="On target";
-    let hCls="h-great",hLbl="✅ Great";
-    if(vP>0.20){hCls="h-fix";hLbl="🚨 Fix Now";}
-    else if(vP>0.08){hCls="h-watch";hLbl="⚠️ Watch";}
-    else if(vP>-0.05){hCls="h-ok";hLbl="👍 OK";}
-    const stgt=(cfg.svcTargets||{})[s.name]||overallTgt;
-    const tr=document.createElement("tr");
-    tr.innerHTML=`<td class="col-svc">${esc(s.name)}</td>
-      <td class="center">${s.jobs}</td>
-      <td>${fD(s.eT/Math.max(s.jobs,1))}</td><td>${fD(s.aT/Math.max(s.jobs,1))}</td>
-      <td class="${vC(vP)}">${fP(vP)}</td>
-      <td class="center">${trend}</td>
-      <td class="${vC(lVP)}">${s.eL?fP(lVP):"—"}</td>
-      <td class="${vC(mVP)}">${s.eM?fP(mVP):"—"}</td>
-      <td class="${vC(eVP)}">${s.eE?fP(eVP):"—"}</td>
-      <td class="center"><input class="tgt-svc-input" type="number" min="0" max="100" value="${stgt}" onchange="updateSvcTgt('${esc(s.name)}',this.value)"/>%</td>
-      <td class="${gap>=0?"var-under":"var-over"}">${am.toFixed(1)}%</td>
-      <td class="${gap>=0?"var-under":"var-over"}">${gap>=0?"+":""}${gap.toFixed(1)}%</td>
-      <td class="${vP>0.05?"var-over":vP<-0.05?"var-under":"var-zero"}">${esc(adj)}</td>
-      <td class="center"><span class="health-pill ${hCls}">${hLbl}</span></td>`;
-    sBody.appendChild(tr);
-  });
-
-  // Job ranking
-  const jBody=ge("insJobBody"); jBody.innerHTML="";
-  jobRanked.forEach((j,idx)=>{
-    const m=j.data.meta||{},sc="status-"+(m.status||"Scheduled").replace(/\s+/g,"-");
-    const mg=-(j.vP)*100-overallTgt;
-    const tr=document.createElement("tr");
-    tr.innerHTML=`<td class="center" style="font-family:var(--font-head);font-weight:800">${idx+1}</td>
-      <td>${esc(m.jobNum||"")}</td><td style="text-align:left">${esc(m.name||"")}</td>
-      <td>${fD(j.t.estCost)}</td><td>${fD(j.t.actCost)}</td>
-      <td class="${vC(j.vD)}">${fD(j.vD)}</td><td class="${vC(j.vP)}">${fP(j.vP)}</td>
-      <td class="${mg>=0?"var-under":"var-over"}">${mg>=0?"+":""}${mg.toFixed(1)}%</td>
-      <td style="text-align:left;color:var(--text2)">${esc(j.issue)}</td>
-      <td class="center"><span class="status-badge ${sc}">${esc(m.status||"—")}</span></td>`;
-    jBody.appendChild(tr);
-  });
-
-  // Equipment drill-down
-  const eqMap={};
-  const eqNames=(cfg.equipment||[]).map(e=>e.name);
-  Object.entries(jobs).forEach(([jid,data])=>{
-    Object.values(data.phases||{}).forEach(ph=>{
-      if(!ph.notes)return;
-      const upper=ph.notes.toUpperCase();
-      eqNames.forEach(eName=>{
-        const key=eName.toUpperCase();
-        const words=key.split(/[\s\-\/]+/).filter(w=>w.length>=5);
-        if(!upper.includes(key)&&!words.some(w=>upper.includes(w)))return;
-        if(!eqMap[eName]){const ecfg=(cfg.equipment||[]).find(e=>e.name===eName)||{};eqMap[eName]={name:eName,group:ecfg.group||"—",rate:ecfg.rate||0,eH:0,aH:0,eC:0,aC:0,jobs:new Set(),over:0,total:0};}
-        const st=eqMap[eName],r=st.rate||1;
-        const share=eqNames.filter(n=>{const u2=n.toUpperCase();const w2=u2.split(/[\s\-\/]+/).filter(w=>w.length>=5);return upper.includes(u2)||w2.some(w=>upper.includes(w));}).length||1;
-        const eE=num(ph.estEquip)/share,aE=num(ph.actEquip)/share;
-        st.eC+=eE; st.aC+=aE; st.eH+=r>0?eE/r:0; st.aH+=r>0?aE/r:0;
-        st.jobs.add(jid); st.total++; if(aE>eE)st.over++;
-      });
-    });
-  });
-  const eqBody=ge("insEquipBody"); eqBody.innerHTML="";
-  const eqRows=Object.values(eqMap).filter(e=>e.eC>0||e.aC>0).sort((a,b)=>(b.aC-b.eC)-(a.aC-a.eC));
-  if(!eqRows.length){eqBody.innerHTML=`<tr><td colspan="12" class="no-results">No equipment data yet. Add equipment names to phase notes (e.g. "Kobelco, Sterling").</td></tr>`;}
-  else{
-    eqRows.forEach(e=>{
-      const hrV=e.aH-e.eH,cV=e.aC-e.eC,hrVP=e.eH?hrV/e.eH:0,avg=e.jobs.size?cV/e.jobs.size:0;
-      let vrd="👍 On target",vCls="equip-ok";
-      if(hrVP>0.20){vrd="🚨 Underestimated";vCls="equip-fix";}
-      else if(hrVP>0.08){vrd="⚠️ Watch";vCls="equip-wt";}
-      else if(hrVP<-0.05){vrd="✅ Efficient";vCls="equip-ok";}
-      const tr=document.createElement("tr");
-      tr.innerHTML=`<td style="text-align:left;font-weight:600">${esc(e.name)}</td>
-        <td class="center">${esc(e.group)}</td><td class="center">${e.jobs.size}</td>
-        <td>${e.eH>0?f1(e.eH):"—"}</td><td>${e.aH>0?f1(e.aH):"—"}</td>
-        <td class="${vC(hrV)}">${e.eH?f1(hrV):"—"}</td>
-        <td class="${vC(hrVP)}">${e.eH?fP(hrVP):"—"}</td>
-        <td>${fD(e.eC)}</td><td>${fD(e.aC)}</td>
-        <td class="${vC(cV)}">${fD(cV)}</td>
-        <td class="${vC(avg)}">${fD(avg)}</td>
-        <td class="center"><span class="${vCls}">${esc(vrd)}</span></td>`;
-      eqBody.appendChild(tr);
-    });
-  }
-
-  // Employee productivity
-  const empMap={};
-  Object.entries(jobs).forEach(([jid,data])=>{
-    Object.values(data.phases||{}).forEach(ph=>{
-      const names=[];
-      if(ph.laborers)ph.laborers.split(/[,;]+/).forEach(n=>names.push(n.trim().replace(/ - Labor Rates$/i,"").trim()));
-      if(ph.crew&&!/^\d/.test(ph.crew.trim()))names.push(ph.crew.trim());
-      names.filter(n=>n.length>1).forEach(name=>{
-        if(!empMap[name])empMap[name]={name,jobs:new Set(),svcs:new Set(),eH:0,aH:0,eL:0,aL:0};
-        const em=empMap[name];
-        em.jobs.add(jid); if(ph.svc)em.svcs.add(ph.svc);
-        em.eH+=num(ph.estHrs); em.aH+=num(ph.actHrs);
-        em.eL+=num(ph.estLabor); em.aL+=num(ph.actLabor);
-      });
-    });
-  });
-  const empBody=ge("insEmpBody"); empBody.innerHTML="";
-  const empRows=Object.values(empMap).filter(e=>e.jobs.size>=1&&(e.eH>0||e.aH>0))
-    .sort((a,b)=>{const aV=a.eH?(a.aH-a.eH)/a.eH:0,bV=b.eH?(b.aH-b.eH)/b.eH:0;return bV-aV;});
-  if(!empRows.length){empBody.innerHTML=`<tr><td colspan="12" class="no-results">No employee data yet. Fill the Crew/Laborers field in Job Detail or import CSV files.</td></tr>`;}
-  else{
-    empRows.forEach(e=>{
-      const hrV=e.aH-e.eH,lV=e.aL-e.eL,hrVP=e.eH?hrV/e.eH:0,avg=e.jobs.size?hrV/e.jobs.size:0;
-      let rtg="👍 Good",rCls="prod-gd";
-      if(hrVP<-0.10){rtg="⭐ Excellent";rCls="prod-ex";}
-      else if(hrVP<0.05){rtg="👍 Good";rCls="prod-gd";}
-      else if(hrVP<0.20){rtg="⚠️ Watch";rCls="prod-wt";}
-      else{rtg="🚨 Over";rCls="prod-ov";}
-      const tr=document.createElement("tr");
-      tr.innerHTML=`<td style="text-align:left;font-weight:600">${esc(e.name)}</td>
-        <td class="center">${e.jobs.size}</td><td class="center">${e.svcs.size}</td>
-        <td>${e.eH>0?f1(e.eH):"—"}</td><td>${e.aH>0?f1(e.aH):"—"}</td>
-        <td class="${vC(hrV)}">${e.eH?f1(hrV):"—"}</td>
-        <td class="${vC(avg)}">${e.eH?f1(avg)+" hrs/job":"—"}</td>
-        <td class="${vC(hrVP)}">${e.eH?fP(hrVP):"—"}</td>
-        <td>${fD(e.eL)}</td><td>${fD(e.aL)}</td>
-        <td class="${vC(lV)}">${fD(lV)}</td>
-        <td class="center"><span class="${rCls}">${esc(rtg)}</span></td>`;
-      empBody.appendChild(tr);
-    });
-  }
-
-  // Seasonal
-  const SEASONS={Spring:{m:[3,4,5],e:"🌱",c:"season-spring"},Summer:{m:[6,7,8],e:"☀️",c:"season-summer"},Fall:{m:[9,10,11],e:"🍂",c:"season-fall"},Winter:{m:[12,1,2],e:"❄️",c:"season-winter"}};
-  const MNTHS=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-  const sSt={};Object.keys(SEASONS).forEach(s=>{sSt[s]={jc:0,eC:0,aC:0,eH:0,aH:0};});
-  const mSt={};
-  sortedJobs().forEach(([,data])=>{
-    const m=data.meta||{},d=m.date?new Date(m.date):null;
-    if(!d||isNaN(d))return;
-    const mo=d.getMonth()+1,yr=d.getFullYear();
-    const t=jobTotals(data); if(!t.estCost&&!t.actCost)return;
-    const mk=yr+"-"+String(mo).padStart(2,"0");
-    if(!mSt[mk])mSt[mk]={mo,yr,lbl:MNTHS[mo-1]+" "+yr,jc:0,eC:0,aC:0,eH:0,aH:0};
-    mSt[mk].jc++; mSt[mk].eC+=t.estCost; mSt[mk].aC+=t.actCost; mSt[mk].eH+=t.eH; mSt[mk].aH+=t.aH;
-    const sn=Object.entries(SEASONS).find(([,s])=>s.m.includes(mo))?.[0];
-    if(sn){sSt[sn].jc++;sSt[sn].eC+=t.estCost;sSt[sn].aC+=t.actCost;sSt[sn].eH+=t.eH;sSt[sn].aH+=t.aH;}
-  });
-  const sCont=ge("insSeasonContent");
-  const hasSeasonData=Object.values(sSt).some(s=>s.jc>0);
-  if(!hasSeasonData){sCont.innerHTML='<div class="insight-empty"><div class="ei">📅</div><p>No dated job data yet. Set Start Dates on jobs to see seasonal analysis.</p></div>';return;}
-  let sHTML='<div class="seasonal-grid">';
-  Object.entries(SEASONS).forEach(([name,def])=>{
-    const s=sSt[name];
-    if(!s.jc){sHTML+=`<div class="season-card ${def.c}"><h3>${def.e} ${name}</h3><div class="s-stat"><span>No jobs recorded</span></div></div>`;return;}
-    const vP=s.eC?(s.aC-s.eC)/s.eC:0,hVP=s.eH?(s.aH-s.eH)/s.eH:0,avg=(s.aC-s.eC)/s.jc;
-    const condStr=name==="Spring"?"wet/frost conditions":name==="Summer"?"heat & dry pavement":name==="Fall"?"cooling temps":"cold ground/equipment";
-    let insight=vP>0.15?"⚠️ "+name+" jobs run "+(vP*100).toFixed(0)+"% over — likely "+condStr+" affecting productivity.":vP<-0.05?"✅ "+name+" is your most accurate season.":"👍 "+name+" tracking close to estimates.";
-    sHTML+=`<div class="season-card ${def.c}"><h3>${def.e} ${name}</h3>
-      <div class="s-stat"><span>Jobs</span><span class="s-val">${s.jc}</span></div>
-      <div class="s-stat"><span>Est Cost</span><span class="s-val">${fD(s.eC)}</span></div>
-      <div class="s-stat"><span>Act Cost</span><span class="s-val">${fD(s.aC)}</span></div>
-      <div class="s-stat"><span>Variance</span><span class="s-val" style="color:${vP>0.1?"var(--red)":vP<-0.05?"var(--green)":"var(--text)"}">${fP(vP)}</span></div>
-      <div class="s-stat"><span>Avg Var/Job</span><span class="s-val" style="color:${avg>0?"var(--red)":avg<0?"var(--green)":"var(--text)"}">${fD(avg)}</span></div>
-      <div class="s-stat"><span>Hr Var%</span><span class="s-val" style="color:${hVP>0.1?"var(--red)":hVP<-0.05?"var(--green)":"var(--text)"}">${fP(hVP)}</span></div>
-      <div style="margin-top:8px;font-size:11px;color:var(--text2);line-height:1.4">${esc(insight)}</div>
-    </div>`;
-  });
-  sHTML+="</div>";
-  const months=Object.values(mSt).sort((a,b)=>a.yr!==b.yr?a.yr-b.yr:a.mo-b.mo);
-  if(months.length){
-    sHTML+=`<div style="overflow-x:auto"><table class="data-table" style="margin-top:4px">
-      <thead><tr><th style="text-align:left">Month</th><th>Season</th><th>Jobs</th><th>Est $</th><th>Act $</th><th>Var $</th><th>Var%</th><th>Est Hrs</th><th>Act Hrs</th></tr></thead><tbody>`;
-    months.forEach(m=>{
-      const vD=m.aC-m.eC,vP2=m.eC?vD/m.eC:0;
-      const sn=Object.entries(SEASONS).find(([,s])=>s.m.includes(m.mo));
-      sHTML+=`<tr><td>${esc(m.lbl)}</td><td class="center">${sn?sn[1].e+" "+sn[0]:""}</td>
-        <td class="center">${m.jc}</td><td>${fD(m.eC)}</td><td>${fD(m.aC)}</td>
-        <td class="${vC(vD)}">${fD(vD)}</td><td class="${vC(vP2)}">${fP(vP2)}</td>
-        <td>${f1(m.eH)}</td><td>${f1(m.aH)}</td></tr>`;
-    });
-    sHTML+="</tbody></table></div>";
-  }
-  sCont.innerHTML=sHTML;
-
-  // Deep dive
-  const laborOver=active.filter(s=>s.aL>s.eL).sort((a,b)=>(b.aL-b.eL)-(a.aL-a.eL)).slice(0,6);
-  const matlOver=active.filter(s=>s.aM>s.eM).sort((a,b)=>(b.aM-b.eM)-(a.aM-a.eM)).slice(0,6);
-  const equipOver=active.filter(s=>s.aE>s.eE).sort((a,b)=>(b.aE-b.eE)-(a.aE-a.eE)).slice(0,6);
-  const hrsOver=active.filter(s=>s.aH>s.eH).sort((a,b)=>(b.aH-b.eH)-(a.aH-a.eH)).slice(0,6);
-  const cardFn=(title,rows,valFn)=>{
-    if(!rows.length)return`<div class="dive-card"><h3>${title}</h3><p style="font-size:12px;color:var(--text3)">No over-budget data yet.</p></div>`;
-    return`<div class="dive-card"><h3>${title}</h3>`+rows.map(s=>`<div class="dive-row"><span>${esc(s.name)}</span><span class="dive-val var-over">${valFn(s)}</span></div>`).join("")+"</div>";
-  };
-  ge("insDive").innerHTML=`<div class="dive-grid">
-    ${cardFn("🔴 Labor Over Budget",laborOver,s=>fD(s.aL-s.eL))}
-    ${cardFn("🔴 Materials Over Budget",matlOver,s=>fD(s.aM-s.eM))}
-    ${cardFn("🔴 Equipment Over Budget",equipOver,s=>fD(s.aE-s.eE))}
-    ${cardFn("⏱ Labor Hours Over",hrsOver,s=>"+"+f1(s.aH-s.eH)+" hrs")}
-  </div>`;
-};
-
-function showInsightEmpty(){
-  ge("insightRecs").innerHTML='<div class="insight-empty"><div class="ei">💡</div><p>Create jobs and enter actual costs to see recommendations.</p></div>';
-  ["insSvcBody","insJobBody","insEquipBody","insEmpBody"].forEach(id=>{
-    const el=ge(id); if(el)el.innerHTML=`<tr><td colspan="14" class="no-results">No data yet.</td></tr>`;
-  });
-  const sc=ge("insSeasonContent"); if(sc)sc.innerHTML="";
-  const id2=ge("insDive"); if(id2)id2.innerHTML="";
-}
-
-// ── PRINT & CSV ───────────────────────────────────────────────────────────
-window.doPrint=function(view){
-  if(view==="detail"&&!curJob){toast("Select a job first","err");return;}
-  document.querySelectorAll(".view").forEach(v=>v.classList.remove("print-target"));
-  const el=ge("view-"+view); if(el)el.classList.add("print-target");
-  closePrint(); window.print();
-  setTimeout(()=>document.querySelectorAll(".view").forEach(v=>v.classList.remove("print-target")),500);
-};
-window.doCSV=function(type){
-  closePrint();
-  if(type==="jobs"){
-    const rows=[["Job #","Job Name","Client","Date","Est Hrs","Act Hrs","Est Cost","Act Cost","Var $","Var %","Status"]];
-    sortedJobs().forEach(([,data])=>{
-      const m=data.meta||{},t=jobTotals(data),v=t.actCost-t.estCost;
-      rows.push([m.jobNum,m.name,m.client,m.date,t.eH.toFixed(1),t.aH.toFixed(1),t.estCost.toFixed(2),t.actCost.toFixed(2),v.toFixed(2),t.estCost?(v/t.estCost*100).toFixed(1)+"%":"",m.status]);
-    });
-    dlCSV(rows,"AMP_Jobs.csv");
-  } else if(type==="detail"){
-    if(!curJob){toast("Select a job first","err");return;}
-    const data=jobs[curJob]||{},m=data.meta||{};
-    const rows=[["Job #","Job Name","Service","Phase","Notes","Laborers","Est Hrs","Act Hrs","Est Labor","Act Labor","Est Matl","Act Matl","Est Equip","Act Equip","Est Total","Act Total","Var $"]];
-    SVCS().forEach(svc=>{
-      for(let p=1;p<=PC();p++){
-        const ph=(data.phases||{})[pKey(svc,p)]||{};
-        const eL=num(ph.estLabor),aL=num(ph.actLabor),eM=num(ph.estMatl),aM=num(ph.actMatl),eE=num(ph.estEquip),aE=num(ph.actEquip);
-        if(!num(ph.estHrs)&&!num(ph.actHrs)&&!eL&&!aL&&!eM&&!aM&&!eE&&!aE&&!ph.notes)continue;
-        rows.push([m.jobNum,m.name,svc,p,ph.notes||"",ph.laborers||"",num(ph.estHrs),num(ph.actHrs),eL.toFixed(2),aL.toFixed(2),eM.toFixed(2),aM.toFixed(2),eE.toFixed(2),aE.toFixed(2),(eL+eM+eE).toFixed(2),(aL+aM+aE).toFixed(2),(aL+aM+aE-eL-eM-eE).toFixed(2)]);
-      }
-    });
-    dlCSV(rows,"AMP_Job_"+(m.jobNum||curJob)+"_Detail.csv");
-  } else if(type==="search"){
-    const rows=[["Job #","Job Name","Client","Date","Services","Notes","Est Cost","Act Cost","Var $","Var%","Status"]];
-    document.querySelectorAll("#srchBody tr").forEach(tr=>{
-      const cells=tr.querySelectorAll("td");
-      if(cells.length<11)return;
-      rows.push(Array.from(cells).slice(0,11).map(td=>td.textContent.trim()));
-    });
-    dlCSV(rows,"AMP_Search_Results.csv");
-  }
-};
-function dlCSV(rows,fn){
-  const csv=rows.map(r=>r.map(v=>`"${String(v||"").replace(/"/g,'""')}"`).join(",")).join("\n");
-  const a=document.createElement("a");
-  a.href="data:text/csv;charset=utf-8,"+encodeURIComponent(csv);
-  a.download=fn; a.click(); toast("Downloaded ✓","ok");
-}
-
-// ── NAVIGATION ────────────────────────────────────────────────────────────
-window.showView=function(name){
-  curView=name;
-  document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
-  document.querySelectorAll(".nav-btn").forEach(b=>b.classList.remove("active"));
-  const el=ge("view-"+name); if(el)el.classList.add("active");
-  const btns=document.querySelectorAll(`.nav-btn`);
-  btns.forEach(b=>{if(b.textContent.toLowerCase().includes(name.replace("dashboard","dash").replace("insights","insight")))b.classList.add("active");});
-  if(name==="search")doSearch();
-  if(name==="insights")renderInsights();
-  if(name==="import")loadHistory();
-};
+let CU=null,curDay="Mon",curView="schedule",viewPerson="Both";
+let schedData={},selCat="ops",selPerson="Mackenzie",editSlotIdx=null;
+let lastMsgRead=Date.now(),unsubs=[];
 
 window.toggleTheme=function(){
-  const html=document.documentElement,d=html.getAttribute("data-theme")==="dark";
-  html.setAttribute("data-theme",d?"light":"dark");
-  ge("themeBtn").textContent=d?"🌙":"☀️";
-  localStorage.setItem("amp_theme",d?"light":"dark");
+  const light=document.body.classList.toggle("light");
+  document.getElementById("themeBtn").textContent=light?"🌙 Dark mode":"☀️ Light mode";
+  localStorage.setItem("jt-theme",light?"light":"dark");
 };
-window.togglePrintMenu=function(){ge("printMenu").classList.toggle("open");};
-function closePrint(){ge("printMenu").classList.remove("open");}
-document.addEventListener("click",e=>{if(!e.target.closest(".print-menu-wrap"))closePrint();});
+(()=>{if(localStorage.getItem("jt-theme")==="light"){document.body.classList.add("light");document.getElementById("themeBtn").textContent="🌙 Dark mode";}})();
 
-// ── BOOT ─────────────────────────────────────────────────────────────────
-(function boot(){
-  const saved=localStorage.getItem("amp_theme")||"light";
-  document.documentElement.setAttribute("data-theme",saved);
-  ge("themeBtn").textContent=saved==="dark"?"☀️":"🌙";
-  loadAll();
-})();
+window.login=function(u){CU=u;selPerson=u;document.getElementById("loginScreen").classList.add("hidden");document.getElementById("appScreen").classList.remove("hidden");buildApp();subscribeAll();};
+window.signOut=function(){unsubs.forEach(u=>u&&u());unsubs=[];CU=null;schedData={};document.getElementById("appScreen").classList.add("hidden");document.getElementById("loginScreen").classList.remove("hidden");};
+window.switchView=function(v,btn){curView=v;["schedule","messages","meetings"].forEach(n=>document.getElementById("v"+n[0].toUpperCase()+n.slice(1)).classList.toggle("hidden",n!==v));document.querySelectorAll(".nav-btn").forEach(b=>b.classList.remove("active"));if(btn)btn.classList.add("active");if(v==="messages"){lastMsgRead=Date.now();document.getElementById("msgBadge").classList.add("hidden");setTimeout(()=>{const l=document.getElementById("msgList");if(l)l.scrollTop=9999;},120);}};
+window.openAddModal=function(p,si){editSlotIdx=si;selPerson=p||CU;selCat="ops";document.getElementById("bModalTitle").textContent="Add block";document.getElementById("bTitle").value="";document.getElementById("bDetail").value="";document.getElementById("bDelete").classList.add("hidden");snapTimes(si);buildMPT();buildCatGrid();document.getElementById("blockOverlay").classList.remove("hidden");};
+window.openEditModal=function(p,si,block){editSlotIdx=si;selPerson=p;selCat=block.cat||"ops";document.getElementById("bModalTitle").textContent="Edit block";document.getElementById("bTitle").value=block.title||"";document.getElementById("bDetail").value=block.detail||"";document.getElementById("bDelete").classList.remove("hidden");snapTimes(si);buildMPT();buildCatGrid();document.getElementById("blockOverlay").classList.remove("hidden");};
+window.closeBlockModal=function(){document.getElementById("blockOverlay").classList.add("hidden");};
+window.saveBlock=function(){const t=document.getElementById("bTitle").value.trim();if(!t){document.getElementById("bTitle").focus();return;}set(ref(db,`schedule/${curDay}/${selPerson}/${editSlotIdx}`),{title:t,detail:document.getElementById("bDetail").value.trim(),cat:selCat,slotIndex:editSlotIdx});window.closeBlockModal();};
+window.deleteBlock=function(){remove(ref(db,`schedule/${curDay}/${selPerson}/${editSlotIdx}`));window.closeBlockModal();};
+window.sendMsg=function(){const t=document.getElementById("msgIn").value.trim();const tag=document.getElementById("msgTag").value.trim();if(!t)return;push(ref(db,"messages"),{author:CU,text:t,project:tag||null,ts:Date.now()});document.getElementById("msgIn").value="";};
+window.openMeetModal=function(){["mTitle","mLoc","mNotes"].forEach(id=>document.getElementById(id).value="");document.getElementById("mDate").value="";document.getElementById("mTime").value="";document.getElementById("meetOverlay").classList.remove("hidden");};
+window.closeMeetModal=function(){document.getElementById("meetOverlay").classList.add("hidden");};
+window.saveMeeting=function(){const t=document.getElementById("mTitle").value.trim();if(!t){document.getElementById("mTitle").focus();return;}push(ref(db,"meetings"),{title:t,date:document.getElementById("mDate").value,time:document.getElementById("mTime").value,location:document.getElementById("mLoc").value.trim()||null,notes:document.getElementById("mNotes").value.trim()||null,from:CU,to:CU==="Mackenzie"?"Manager":"Mackenzie",status:"pending",ts:Date.now()});window.closeMeetModal();};
+
+function buildApp(){
+  const av=CU==="Mackenzie"?"background:#1E3A5F;color:#93C5FD;":"background:#7F1D1D;color:#FCA5A5;";
+  const init=CU==="Mackenzie"?"MK":"MGR";
+  document.getElementById("userPill").innerHTML=`<span class="avatar" style="${av}">${init}</span>${CU}`;
+  const de=document.getElementById("dayBtns");de.innerHTML="";
+  DAYS.forEach(d=>{const b=document.createElement("button");b.className="day-btn"+(d===curDay?" active":"");b.textContent=d;b.onclick=()=>{curDay=d;document.querySelectorAll(".day-btn").forEach(x=>x.classList.toggle("active",x.textContent===d));document.getElementById("schedTitle").textContent=`${d} — Schedule`;renderSchedule();};de.appendChild(b);});
+  document.getElementById("legend").innerHTML=Object.entries(CATS).map(([,v])=>`<div class="leg"><div class="leg-dot" style="background:${v.color}"></div>${v.label}</div>`).join("");
+  buildPT();
+  const h=TIME_OPTS.map(o=>`<option value="${o.val}">${o.label}</option>`).join("");
+  document.getElementById("bStart").innerHTML=h;document.getElementById("bEnd").innerHTML=h;
+  document.getElementById("msgIn").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();window.sendMsg();}});
+}
+function buildPT(){const el=document.getElementById("personToggle");el.innerHTML="";["Mackenzie","Manager","Both"].forEach(p=>{const b=document.createElement("button");b.className="person-btn"+(p===viewPerson?" active":"");b.textContent=p;b.onclick=()=>{viewPerson=p;buildPT();renderSchedule();};el.appendChild(b);});}
+function buildMPT(){const el=document.getElementById("modalPersonToggle");el.innerHTML="";["Mackenzie","Manager"].forEach(p=>{const b=document.createElement("button");b.className="person-btn"+(p===selPerson?" active":"");b.textContent=p;b.onclick=()=>{selPerson=p;buildMPT();};el.appendChild(b);});}
+function buildCatGrid(){const g=document.getElementById("catGrid");g.innerHTML="";Object.entries(CATS).forEach(([k,v])=>{const b=document.createElement("button");b.className="cat-btn c-"+k+(k===selCat?" active":"");const[r,g2,bl]=[parseInt(v.color.slice(1,3),16),parseInt(v.color.slice(3,5),16),parseInt(v.color.slice(5,7),16)];b.style.cssText=`--cc:${v.color};--cbg:rgba(${r},${g2},${bl},0.14);--ct:${v.color};`;b.innerHTML=`<div class="cat-sw" style="background:${v.color}"></div>${v.label}`;b.onclick=()=>{selCat=k;buildCatGrid();};g.appendChild(b);});}
+function snapTimes(si){const slot=SLOTS[si]||SLOTS[0];const[a,b]=slot.label.split("–");const toM=s=>{const[h,m]=s.split(":").map(Number);return h*60+m;};const snap=(id,v)=>{const s=document.getElementById(id);s.value=TIME_OPTS.reduce((p,c)=>Math.abs(c.val-v)<Math.abs(p.val-v)?c:p).val;};snap("bStart",toM(a));snap("bEnd",toM(b));}
+function subscribeAll(){
+  unsubs.push(onValue(ref(db,"schedule"),snap=>{schedData=snap.val()||{};if(!snap.val())seedDefaults();if(curView==="schedule")renderSchedule();}));
+  unsubs.push(onValue(ref(db,"messages"),snap=>renderMessages(snap.val())));
+  unsubs.push(onValue(ref(db,"meetings"),snap=>renderMeetings(snap.val())));
+}
+function seedDefaults(){DAYS.forEach(day=>["Mackenzie","Manager"].forEach(person=>DEFAULTS[person].forEach((block,i)=>{if(block)set(ref(db,`schedule/${day}/${person}/${i}`),{...block,slotIndex:i});})));}
+function renderSchedule(){
+  const g=document.getElementById("schedGrid");g.innerHTML="";
+  const sM=viewPerson==="Mackenzie"||viewPerson==="Both",sMgr=viewPerson==="Manager"||viewPerson==="Both";
+  const cols=sM&&sMgr?"82px 1fr 1fr":"82px 1fr";
+  const hd=document.createElement("div");hd.className="sched-head";hd.style.gridTemplateColumns=cols;
+  hd.innerHTML=`<div class="sh-cell">Time</div>`+(sM?`<div class="sh-cell">Mackenzie</div>`:"")+( sMgr?`<div class="sh-cell">Manager</div>`:"");
+  g.appendChild(hd);
+  const dayD=schedData[curDay]||{};
+  SLOTS.forEach((slot,i)=>{const row=document.createElement("div");row.className=`sched-row m${slot.mins}${slot.secBreak?" sec-break":""}`;row.style.gridTemplateColumns=cols;const tc=document.createElement("div");tc.className="t-cell";tc.textContent=slot.label;row.appendChild(tc);if(sM)row.appendChild(makeCell("Mackenzie",i,dayD));if(sMgr)row.appendChild(makeCell("Manager",i,dayD));g.appendChild(row);});
+}
+function makeCell(person,idx,dayD){const block=(dayD[person]||{})[idx]||null;const cell=document.createElement("div");if(block){cell.className=`b-cell c-${block.cat||"flex"}`;cell.innerHTML=`<div class="cat-bar"></div><div class="b-inner"><div class="b-pill">${CATS[block.cat]?.label||""}</div><div class="b-title">${esc(block.title)}</div>${block.detail?`<div class="b-detail">${esc(block.detail)}</div>`:""}</div>`;cell.onclick=()=>window.openEditModal(person,idx,block);}else{cell.className="b-cell empty";cell.innerHTML=`<span class="empty-hint">+ add block</span>`;cell.onclick=()=>window.openAddModal(person,idx);}return cell;}
+function renderMessages(data){const list=document.getElementById("msgList");if(!data){list.innerHTML=`<div class="empty-state">No messages yet.</div>`;return;}const msgs=Object.entries(data).map(([id,m])=>({id,...m})).sort((a,b)=>a.ts-b.ts);list.innerHTML="";msgs.forEach(m=>{const mine=m.author===CU;const div=document.createElement("div");div.className="msg-bub "+(mine?"mine":"theirs");const t=new Date(m.ts).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});div.innerHTML=`<div class="msg-meta"><span class="msg-who">${esc(m.author)}</span>${m.project?`<span class="msg-tag">${esc(m.project)}</span>`:""}<span>${t}</span></div><div class="msg-text">${esc(m.text)}</div>`;list.appendChild(div);});list.scrollTop=list.scrollHeight;const unread=msgs.filter(m=>m.author!==CU&&m.ts>lastMsgRead).length;const badge=document.getElementById("msgBadge");if(unread>0&&curView!=="messages"){badge.textContent=unread;badge.classList.remove("hidden");}else badge.classList.add("hidden");}
+function renderMeetings(data){const list=document.getElementById("meetList");if(!data){list.innerHTML=`<div class="empty-state">No meeting invites yet.</div>`;return;}const meets=Object.entries(data).map(([id,m])=>({id,...m})).sort((a,b)=>(a.ts||0)-(b.ts||0));list.innerHTML="";meets.forEach(meet=>{const mine=meet.from===CU;const s=meet.status||"pending";const card=document.createElement("div");card.className=`meet-card ${mine?"pm":s==="pending"?"pt":s==="accepted"?"acc":"dec"}`;const dStr=meet.date?new Date(meet.date+"T12:00").toLocaleDateString([],{weekday:"short",month:"short",day:"numeric"}):"TBD";card.innerHTML=`<div class="meet-info"><div class="meet-title">${esc(meet.title)}</div><div class="meet-meta"><span>📅 ${dStr} ${meet.time||""}</span>${meet.location?`<span>📍 ${esc(meet.location)}</span>`:""}<span>From: ${esc(meet.from)}</span></div>${meet.notes?`<div class="meet-notes">${esc(meet.notes)}</div>`:""}</div><div class="meet-actions"><span class="ms ms-${s[0]}">${s[0].toUpperCase()+s.slice(1)}</span>${!mine&&s==="pending"?`<button class="btn-acc" data-id="${meet.id}">Accept</button><button class="btn-dec" data-id="${meet.id}">Decline</button>`:""}${mine?`<button class="btn-dec" data-id="${meet.id}" data-rm="1">Remove</button>`:""}</div>`;card.querySelector(".btn-acc")?.addEventListener("click",e=>update(ref(db,`meetings/${e.target.dataset.id}`),{status:"accepted"}));card.querySelector(".btn-dec")?.addEventListener("click",e=>{if(e.target.dataset.rm)remove(ref(db,`meetings/${e.target.dataset.id}`));else update(ref(db,`meetings/${e.target.dataset.id}`),{status:"declined"});});list.appendChild(card);});const pend=meets.filter(m=>m.to===CU&&m.status==="pending").length;const badge=document.getElementById("meetBadge");if(pend>0){badge.textContent=pend;badge.classList.remove("hidden");}else badge.classList.add("hidden");}
+function esc(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
 </script>
+</body>
 </html>
